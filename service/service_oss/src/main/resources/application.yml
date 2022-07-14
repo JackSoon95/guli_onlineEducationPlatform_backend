@@ -1,0 +1,20 @@
+server:
+  port: 8002
+
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+  application:
+    name: service-oss
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+dropbox:
+  token: sl.BLZ-JCQVv9FbjNEZC3eo1e3mboy5WOnBRl9nJDjQ_R3gbNSj8egSD_EirzsQkgT1I21NrD0RFO_SlzsJvt85UM2g81KfmcYDBh9dl1QOzbpCqzi3pn0-UURewdnHBZDLI5p02cm7 #CHANGEEE
+  app: edu-learning-project

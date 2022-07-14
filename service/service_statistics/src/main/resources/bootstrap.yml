@@ -1,0 +1,14 @@
+#spring:
+#  cloud:
+#    nacos:
+#      config:
+#        server-addr: 127.0.0.1:8848
+#        file-extension: yaml
+#        ext-config:
+#          - data-id: port.yaml
+#            refresh: true
+#        namespace: 58d1bb7e-a4e2-49d8-9189-6a88358a3863
+#  application:
+#    name: service-statistics
+#  profiles:
+#    active: dev
