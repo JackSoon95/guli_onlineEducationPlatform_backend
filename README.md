@@ -5951,15 +5951,7 @@ public class ResponseUtil {
     }
 }
 
-```
 
-
-
-## SQL
-
-mySQL [龙达达](https://gitee.com/longdada888/online-Education.git)
-
-```mysql
 
 ```
 
