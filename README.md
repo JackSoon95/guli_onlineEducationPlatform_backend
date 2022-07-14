@@ -1,6 +1,6 @@
 # Guli Project
 
-This is a learning project  learnt from ???
+This is a learning project  learnt from 尚硅谷
 
 https://www.bilibili.com/video/BV1dQ4y1A75e?p=307&vd_source=a788bdd4d7cdd9dfe02852346d523cb9
 
@@ -42,7 +42,7 @@ Please copy paste this file to your Typora in order to get the grouping function
 
 ## Pre Knowledge
 
-Learnt from [??? - ???? - ??? + ?? - ????????](https://www.bilibili.com/video/BV1dQ4y1A75e?p=3&spm_id_from=pageDriver&vd_source=a788bdd4d7cdd9dfe02852346d523cb9)
+Learnt from [尚硅谷 - 谷粒学院 - 微服务 + 全栈 - 在线教育实战项目](https://www.bilibili.com/video/BV1dQ4y1A75e?p=3&spm_id_from=pageDriver&vd_source=a788bdd4d7cdd9dfe02852346d523cb9)
 
 
 
@@ -96,7 +96,7 @@ mvn install:install-file -DgroupId=com.aliyun -DartifactId=aliyun-sdk-vod-upload
 > Default max tomcat upload size: 1024 * 1024 bytes (1mb)
 
 ```properties
-#single file max (default 1mb)
+#single file max (default 1mb）
 spring.servlet.multipart.max-file-size=1024MB
 #multi max (default 10mb)
 spring.servlet.multipart.max-request-size=1024MB 
@@ -401,7 +401,7 @@ refer: https://programmer.group/spring-cloud-gateway-routing-assertion-filtering
                <artifactId>gson</artifactId>
            </dependency>
    
-           <!--????-->
+           <!--服务调用-->
            <dependency>
                <groupId>org.springframework.cloud</groupId>
                <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -460,7 +460,7 @@ refer: https://programmer.group/spring-cloud-gateway-routing-assertion-filtering
    import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
    
    @SpringBootApplication
-   @EnableDiscoveryClient  //????
+   @EnableDiscoveryClient  //服务发现
    public class ApiGatewayApplication {
        public static void main(String[] args) {
            SpringApplication.run(ApiGatewayApplication.class);
@@ -525,9 +525,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ???????
+ * 自定义异常处理
  *
- * <p>????JSON??HTML????<p>
+ * <p>异常时用JSON代替HTML异常信息<p>
  *
  */
 public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
@@ -538,20 +538,20 @@ public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
     }
 
     /**
-     * ??????
+     * 获取异常属性
      */
     @Override
     protected Map<String, Object> getErrorAttributes(ServerRequest request, boolean includeStackTrace) {
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
         map.put("code", 20005);
-        map.put("message", "????");
+        map.put("message", "网关失败");
         map.put("data", null);
         return map;
     }
 
     /**
-     * ?????????JSON?????
+     * 指定响应处理方法为JSON处理的方法
      * @param errorAttributes
      */
     @Override
@@ -560,7 +560,7 @@ public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
     }
 
     /**
-     * ??code?????HttpStatus
+     * 根据code获取对应的HttpStatus
      * @param errorAttributes
      */
     @Override
@@ -592,7 +592,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * ?????????
+ * 覆盖默认的异常处理
  *
  */
 @Configuration
@@ -662,7 +662,7 @@ import java.util.List;
 
 /**
  * <p>
- * ??Filter,???????????????????
+ * 全局Filter，统一处理会员登录与外部不允许访问的服务
  * </p>
  *
  * @author qy
@@ -677,7 +677,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
-        //????api??,????????
+        //谷粒学院api接口，校验用户必须登录
         if(antPathMatcher.match("/api/**/auth/**", path)) {
             List<String> tokenList = request.getHeaders().get("token");
             if(null == tokenList) {
@@ -691,7 +691,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
 //                }
             }
         }
-        //??????,???????
+        //内部服务接口，不允许外部访问
         if(antPathMatcher.match("/**/inner/**", path)) {
             ServerHttpResponse response = exchange.getResponse();
             return out(response);
@@ -708,11 +708,11 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
         JsonObject message = new JsonObject();
         message.addProperty("success", false);
         message.addProperty("code", 28004);
-        message.addProperty("data", "????");
+        message.addProperty("data", "鉴权失败");
         byte[] bits = message.toString().getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bits);
         //response.setStatusCode(HttpStatus.UNAUTHORIZED);
-        //????,????????????
+        //指定编码，否则在浏览器中会中文乱码
         response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
         return response.writeWith(Mono.just(buffer));
     }
@@ -736,7 +736,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
 
 1. in nacos, set config
 
-   `${prefix????}-${spring.profiles.active}.${file-extension}`
+   `${prefix服务名字}-${spring.profiles.active}.${file-extension}`
 
    `service-statistic.properties` <=this case spring.profiles.active not available
 
@@ -931,7 +931,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
- * Security???
+ * Security配置类
  */
 @Configuration
 @EnableWebSecurity
@@ -953,7 +953,7 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * ????
+     * 配置设置
      * @param http
      * @throws Exception
      */
@@ -971,7 +971,7 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * ????
+     * 密码处理
      * @param auth
      * @throws Exception
      */
@@ -981,7 +981,7 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * ?????????
+     * 配置哪些请求不拦截
      * @param web
      * @throws Exception
      */
@@ -1019,16 +1019,16 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * ??????????
+ * 安全认证用户详情信息
  */
 @Data
 @Slf4j
 public class SecurityUser implements UserDetails {
 
-    //??????
+    //当前登录用户
     private transient User currentUserInfo;
 
-    //????
+    //当前权限
     private List<String> permissionValueList;
 
     public SecurityUser() {
@@ -1101,27 +1101,27 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * ?????
+ * 用户实体类
  */
 @Data
-@ApiModel(description = "?????")
+@ApiModel(description = "用户实体类")
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "??openid")
+	@ApiModelProperty(value = "微信openid")
 	private String username;
 
-	@ApiModelProperty(value = "??")
+	@ApiModelProperty(value = "密码")
 	private String password;
 
-	@ApiModelProperty(value = "??")
+	@ApiModelProperty(value = "昵称")
 	private String nickName;
 
-	@ApiModelProperty(value = "????")
+	@ApiModelProperty(value = "用户头像")
 	private String salt;
 
-	@ApiModelProperty(value = "????")
+	@ApiModelProperty(value = "用户签名")
 	private String token;
 
 }
@@ -1191,7 +1191,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * ?????,??UsernamePasswordAuthenticationFilter,????????????
+ * 登录过滤器，继承UsernamePasswordAuthenticationFilter，对用户名密码进行登录校验
  */
 public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -1221,7 +1221,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     /**
-     * ????
+     * 登录成功
      * @param req
      * @param res
      * @param chain
@@ -1240,7 +1240,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     /**
-     * ????
+     * 登录失败
      * @param request
      * @param response
      * @param e
@@ -1293,7 +1293,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * ?????
+ * 访问过滤器
  */
 public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
     private TokenManager tokenManager;
@@ -1330,7 +1330,7 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        // token??header?
+        // token置于header里
         String token = request.getHeader("token");
         if (token != null && !"".equals(token.trim())) {
             String userName = tokenManager.getUserFromToken(token);
@@ -1367,7 +1367,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
- * ?????????
+ * 密码的处理方法类型
  */
 @Component
 public class DefaultPasswordEncoder implements PasswordEncoder {
@@ -1413,7 +1413,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * ???????
+ * 登出业务逻辑类
  */
 public class TokenLogoutHandler implements LogoutHandler {
 
@@ -1431,7 +1431,7 @@ public class TokenLogoutHandler implements LogoutHandler {
         if (token != null) {
             tokenManager.removeToken(token);
 
-            //??????????????
+            //清空当前用户缓存中的权限数据
             String userName = tokenManager.getUserFromToken(token);
             redisTemplate.delete(userName);
         }
@@ -1456,7 +1456,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * token??
+ * token管理
  */
 @Component
 public class TokenManager {
@@ -1477,7 +1477,7 @@ public class TokenManager {
     }
 
     public void removeToken(String token) {
-        //jwttoken????,????????
+        //jwttoken无需删除，客户端扔掉即可。
     }
 
 }
@@ -1488,7 +1488,7 @@ public class TokenManager {
 
 ##### 4. UnauthorizedEntryPoint implements AuthenticationEntryPoint
 
-> ??????????
+> 未授权的统一处理方式
 >
 > `@Override commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)`
 
@@ -1506,7 +1506,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * ??????????
+ * 未授权的统一处理方式
  */
 public class UnauthorizedEntryPoint implements AuthenticationEntryPoint {
 
@@ -1586,7 +1586,7 @@ public class UnauthorizedEntryPoint implements AuthenticationEntryPoint {
            <version>0.0.1-SNAPSHOT</version>
        </dependency>
    
-       <!-- Spring Security?? -->
+       <!-- Spring Security依赖 -->
        <dependency>
            <groupId>org.springframework.boot</groupId>
            <artifactId>spring-boot-starter-security</artifactId>
@@ -1790,7 +1790,7 @@ ES6 vs ES5
 </script>
 ```
 
-?	 ![image-20220627182253038](images/image-20220627182253038.png)
+	 ![image-20220627182253038](images/image-20220627182253038.png)
 
 
 
@@ -2074,7 +2074,7 @@ multi variable
 
    Result
 
-?		![image-20220627194509462](images/image-20220627194509462.png)
+		![image-20220627194509462](images/image-20220627194509462.png)
 
 ##### v-
 
@@ -2121,7 +2121,7 @@ multi variable
         el: '#app',
         data: {
             searchMap: {
-                keyWord: '???'
+                keyWord: '尚硅谷'
             }
         }
     })
@@ -2293,7 +2293,7 @@ heavy when load (hungry)
         el: '#app',
         components: {
             'Navbar': {
-                template: '<ul><li>??</li><li>????</li></ul>'
+                template: '<ul><li>首页</li><li>学员管理</li></ul>'
             }
         }
     })
@@ -2308,7 +2308,7 @@ heavy when load (hungry)
 
 ```js
 Vue.component('Navbar', {
-    template: '<ul><li>??</li><li>????</li></ul>'
+    template: '<ul><li>首页</li><li>学员管理</li></ul>'
 })
 ```
 
@@ -2415,7 +2415,7 @@ data.json (for test)
 {
     "success": true,
     "code": 20000,
-    "message": "??",
+    "message": "成功",
     "data": [
         {"name": "lucy", "age": 18},
         {"name": "tom", "age": 20},
@@ -2671,7 +2671,7 @@ export function save() {
 }
 ```
 
-?	or
+	or
 
 ```js
 export default {
@@ -2697,7 +2697,7 @@ getList()
 save()
 ```
 
-?	or
+	or
 
 ```js
 import m from "./01.js";
@@ -2779,7 +2779,7 @@ const utils = require('./utils')
 common.info("hello common " + utils.add(1,2))
 ```
 
-?	4. create webpack.config.js
+	4. create webpack.config.js
 
 ```js
 const path = require("path") //node.js built-in module
@@ -2794,9 +2794,9 @@ module.exports = {
 
 
 
-?	5. `webpack <--mode=development>` //default --mode=production (compressed into one line), development => readable format.
+	5. `webpack <--mode=development>` //default --mode=production (compressed into one line), development => readable format.
 
-?	6. in html, import
+	6. in html, import
 
 ```html
 <script src="./dist/bundle.js"></script>
@@ -2892,7 +2892,7 @@ module.exports = {
 > pages => course.d => index.vue
 
 ```vue
-<router-link to "/course" ....>??</router-link>
+<router-link to "/course" ....>课程</router-link>
 ```
 
 > Dynamic eg .../1
@@ -2918,18 +2918,18 @@ new folder
 > import cookie from 'js-cookie'
 > import { MessageBox, Message } from 'element-ui'
 > 
-> // ??axios??
+> // 创建axios实例
 > const service = axios.create({
->   baseURL: `http://localhost:9001`, // api?base_url
->   timeout: 20000 // ??????
+>   baseURL: `http://localhost:9001`, // api的base_url
+>   timeout: 20000 // 请求超时时间
 > })
-> // ???http request ???
+> // 第三步http request 拦截器
 > service.interceptors.request.use(
 >   config => {
 >   //debugger
->   //??cookie??guli_token????
+>   //判断cookie里面guli_token是否有值
 >   if (cookie.get('guli_token')) {
->     //????token????headers?
+>     //吧获取的token放在头部headers中
 >     config.headers['token'] = cookie.get('guli_token');
 >   }
 >     return config
@@ -3038,10 +3038,10 @@ Vue.use(VueQriously)
 - Element-ui
 
 ```js
-import ElementUI from 'element-ui' //element-ui?????
-import 'element-ui/lib/theme-chalk/index.css'//element-ui?css
+import ElementUI from 'element-ui' //element-ui的全部组件
+import 'element-ui/lib/theme-chalk/index.css'//element-ui的css
 
-Vue.use(ElementUI) //??elementUI
+Vue.use(ElementUI) //使用elementUI
 ```
 
 
@@ -3284,29 +3284,29 @@ public class CodeGenerator {
     @Test
     public void main1() {
 
-        // 1????????
+        // 1、创建代码生成器
         AutoGenerator mpg = new AutoGenerator();
 
-        // 2?????
+        // 2、全局配置
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
         System.out.println(projectPath);
         gc.setOutputDir("E:\\IdeaProjects\\guli\\service\\service_edu" + "/src/main/java");
         gc.setAuthor("atguigu");
-        gc.setOpen(false); //????????????
-        gc.setFileOverride(false); //???????????
+        gc.setOpen(false); //生成后是否打开资源管理器
+        gc.setFileOverride(false); //重新生成时文件是否覆盖
         /*
-         * mp??service???,???????????? I
+         * mp生成service层代码，默认接口名称第一个字母有 I
          * UcenterService
          * */
-        gc.setServiceName("%sService");    //??Service??????I
-        gc.setIdType(IdType.ID_WORKER_STR); //????
-        gc.setDateType(DateType.ONLY_DATE);//?????????????
-        gc.setSwagger2(true);//??Swagger2??
+        gc.setServiceName("%sService");    //去掉Service接口的首字母I
+        gc.setIdType(IdType.ID_WORKER_STR); //主键策略
+        gc.setDateType(DateType.ONLY_DATE);//定义生成的实体类中日期类型
+        gc.setSwagger2(true);//开启Swagger2模式
 
         mpg.setGlobalConfig(gc);
 
-        // 3??????
+        // 3、数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setUrl("jdbc:mysql://localhost:3306/guli?serverTimezone=GMT%2B8");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
@@ -3316,31 +3316,31 @@ public class CodeGenerator {
         
         mpg.setDataSource(dsc);
 
-        // 4????
+        // 4、包配置
         PackageConfig pc = new PackageConfig();
         pc.setParent("com.atguigu");
-        pc.setModuleName("eduservice"); //???
+        pc.setModuleName("eduservice"); //模块名
         pc.setController("controller"); //com.atguigu.edu.service.controller
         pc.setEntity("entity");
         pc.setService("service");
         pc.setMapper("mapper");
         mpg.setPackageInfo(pc);
 
-        // 5?????
+        // 5、策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setInclude("edu_teacher"); //mysql??, ??: ("edu..", "edu...")
-        strategy.setNaming(NamingStrategy.underline_to_camel);//??????????????
-        strategy.setTablePrefix(pc.getModuleName() + "_"); //??????????
+        strategy.setInclude("edu_teacher"); //mysql表名, 多表: ("edu..", "edu...")
+        strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
+        strategy.setTablePrefix(pc.getModuleName() + "_"); //生成实体时去掉表前缀
 
-        strategy.setColumnNaming(NamingStrategy.underline_to_camel);//????????????????
-        strategy.setEntityLombokModel(true); // lombok ?? @Accessors(chain = true) setter????
+        strategy.setColumnNaming(NamingStrategy.underline_to_camel);//数据库表字段映射到实体的命名策略
+        strategy.setEntityLombokModel(true); // lombok 模型 @Accessors(chain = true) setter链式操作
 
-        strategy.setRestControllerStyle(true); //restful api?????
-        strategy.setControllerMappingHyphenStyle(true); //url???????
+        strategy.setRestControllerStyle(true); //restful api风格控制器
+        strategy.setControllerMappingHyphenStyle(true); //url中驼峰转连字符
 
         mpg.setStrategy(strategy);
 
-        // 6???
+        // 6、执行
         mpg.execute();
     }
 }
@@ -4015,11 +4015,11 @@ public class RedisConfig extends CachingConfigurerSupport {
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
         template.setConnectionFactory(factory);
-        //key?????
+        //key序列化方式
         template.setKeySerializer(redisSerializer);
-        //value???
+        //value序列化
         template.setValueSerializer(jackson2JsonRedisSerializer);
-        //value hashmap???
+        //value hashmap序列化
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
         return template;
     }
@@ -4028,12 +4028,12 @@ public class RedisConfig extends CachingConfigurerSupport {
     public CacheManager cacheManager(RedisConnectionFactory factory) {
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        //?????????????
+        //解决查询缓存转换异常的问题
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
-        // ?????(???????),????600?
+        // 配置序列化（解决乱码的问题）,过期时间600秒
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(600))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
@@ -4196,7 +4196,7 @@ remember to scan the package if the config is not in your module
 
 - it is impossible for user to experience login again for visitting different service in same project.
 
-- SSO - single sign on -- ????
+- SSO - single sign on -- 单点登录
 
   1. Session Broadcast
 
@@ -4293,7 +4293,7 @@ public class JwtUtils {
     }
 
     /**
-     * ??token???????
+     * 判断token是否存在与有效
      * @param jwtToken
      * @return
      */
@@ -4309,7 +4309,7 @@ public class JwtUtils {
     }
 
     /**
-     * ??token???????
+     * 判断token是否存在与有效
      * @param request
      * @return
      */
@@ -4326,7 +4326,7 @@ public class JwtUtils {
     }
 
     /**
-     * ??token????id
+     * 根据token获取会员id
      * @param request
      * @return
      */
@@ -4354,21 +4354,21 @@ public class JwtUtils {
 ```vue
 import cookie from 'js-cookie'
 submitLogin() {
-    //??? ????????,??token???
+    //第一步 调用接口进行登录，返回token字符串
     loginApi.submitLoginUser(this.user) 
     .then(response => {
-        //??? ??token?????cookie??
-        //?????cookie??,??????,????????? (if the ip is http://192.168.x.x then this cookie will not transfer)
+        //第二步 获取token字符串放到cookie里面
+        //第一个参数cookie名称，第二个参数值，第三个参数作用范围 (if the ip is http://192.168.x.x then this cookie will not transfer)
         cookie.set('guli_token',response.data.data.token,{domain: 'localhost'})
 
-        //??? ???? ??token??????,???????
+        //第四步 调用接口 根据token获取用户信息，为了首页面显示
         loginApi.getLoginUserInfo()
         .then(response => {
             this.loginInfo = response.data.data.userInfo
-            //????????,??cookie??
+            //获取返回用户信息，放到cookie里面
             cookie.set('guli_ucenter',this.loginInfo,{domain: 'localhost'})
 
-            //???? (javascript method, can choose to use router.push)
+            //跳转页面 (javascript method, can choose to use router.push)
             window.location.href = "/";
     	})
     })
@@ -4382,19 +4382,19 @@ import axios from 'axios'
 import cookie from 'js-cookie' //********
 import { MessageBox, Message } from 'element-ui'
 
-// ??axios??
+// 创建axios实例
 const service = axios.create({
-  baseURL: `http://localhost:9001`, // api?base_url
-  timeout: 20000 // ??????
+  baseURL: `http://localhost:9001`, // api的base_url
+  timeout: 20000 // 请求超时时间
 })
 
 //every request will go through this interceptor
 service.interceptors.request.use(
   config => {
   //debugger
-  //??cookie??guli_token????
+  //判断cookie里面guli_token是否有值
   if (cookie.get('guli_token')) {
-    //????token????headers?
+    //吧获取的token放在头部headers中
     config.headers['token'] = cookie.get('guli_token');
   }
     return config
@@ -4413,16 +4413,16 @@ import cookie from 'js-cookie'
 
 export default {
   created() {
-    //??????token?
+    //获取路径里面token值
     this.token = this.$route.query.token
     this.showInfo()
   },
   methods:{
-    //????,?cookie??????
+    //创建方法，从cookie获取用户信息
     showInfo() {
-      //?cookie??????
+      //从cookie获取用户信息
       var userStr = cookie.get('guli_ucenter')
-      // ??????json??(js??)
+      // 把字符串转换json对象(js对象)
       // trim the "" from userStr
       if(userStr) {
         this.loginInfo = JSON.parse(userStr)
@@ -4464,7 +4464,7 @@ public final class MD5 {
             return new String(chars);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            throw new RuntimeException("MD5????!!+" + e);
+            throw new RuntimeException("MD5加密出错！！+" + e);
         }
     }
 
@@ -4482,10 +4482,10 @@ public final class MD5 {
 
 ```js
 logout() {
-    //??cookie?
+    //清空cookie值
     cookie.set('guli_token','',{domain: 'localhost'})
     cookie.set('guli_ucenter','',{domain: 'localhost'})
-    //?????
+    //回到首页面
     window.location.href = "/";
 }
 ```
@@ -4663,7 +4663,7 @@ create table member(
    
        @Override
        public void run(String... strings) throws Exception {
-           //????,??canal?????
+           //项目启动，执行canal客户端监听
            canalClient.run();
        }
    }
@@ -4703,14 +4703,14 @@ create table member(
    @Component
    public class CanalClient {
    
-       //sql??
+       //sql队列
        private Queue<String> SQL_QUEUE = new ConcurrentLinkedQueue<>();
    
        @Resource
        private DataSource dataSource;
    
        /**
-        * canal????
+        * canal入库方法
         */
        public void run() {
    // your linux addr
@@ -4723,7 +4723,7 @@ create table member(
                connector.rollback();
                try {
                    while (true) {
-                       //???master??????batchSize???,??????
+                       //尝试从master那边拉去数据batchSize条记录，有多少取多少
                        Message message = connector.getWithoutAck(batchSize);
                        long batchId = message.getId();
                        int size = message.getEntries().size();
@@ -4734,7 +4734,7 @@ create table member(
                        }
                        connector.ack(batchId);
    
-                       //????????sql??????????????
+                       //当队列里面堆积的sql大于一定数值的时候就模拟执行
                        if (SQL_QUEUE.size() >= 1) {
                            executeQueueSql();
                        }
@@ -4750,7 +4750,7 @@ create table member(
        }
    
        /**
-        * ?????????sql??
+        * 模拟执行队列里面的sql语句
         */
        public void executeQueueSql() {
            int size = SQL_QUEUE.size();
@@ -4763,7 +4763,7 @@ create table member(
        }
    
        /**
-        * ????
+        * 数据处理
         *
         * @param entrys
         */
@@ -4784,7 +4784,7 @@ create table member(
        }
    
        /**
-        * ??????
+        * 保存更新语句
         *
         * @param entry
         */
@@ -4806,7 +4806,7 @@ create table member(
                    List<Column> oldColumnList = rowData.getBeforeColumnsList();
                    for (Column column : oldColumnList) {
                        if (column.getIsKey()) {
-                           //?????????
+                           //暂时只支持单一主键
                            sql.append(column.getName() + "=" + column.getValue());
                            break;
                        }
@@ -4819,7 +4819,7 @@ create table member(
        }
    
        /**
-        * ??????
+        * 保存删除语句
         *
         * @param entry
         */
@@ -4832,7 +4832,7 @@ create table member(
                    StringBuffer sql = new StringBuffer("delete from " + entry.getHeader().getTableName() + " where ");
                    for (Column column : columnList) {
                        if (column.getIsKey()) {
-                           //?????????
+                           //暂时只支持单一主键
                            sql.append(column.getName() + "=" + column.getValue());
                            break;
                        }
@@ -4845,7 +4845,7 @@ create table member(
        }
    
        /**
-        * ??????
+        * 保存插入语句
         *
         * @param entry
         */
@@ -4878,7 +4878,7 @@ create table member(
        }
    
        /**
-        * ??
+        * 入库
         * @param sql
         */
        public void execute(String sql) {
@@ -4909,23 +4909,23 @@ create table member(
 
 ### mySQL Alibaba Rules
 
-[????????](https://www.w3cschool.cn/alibaba_java/alibaba_java-mjfd3fg9.html)
+[阿里巴巴开发手册](https://www.w3cschool.cn/alibaba_java/alibaba_java-mjfd3fg9.html)
 
-- ??????????????,???? is_xxx ?????,????? unsigned tinyint
+- 【强制】表达是与否概念的字段，必须使用 is_xxx 的方式命名，数据类型是 unsigned tinyint
 
-  (1 ???,0 ???)
+  （1 表示是，0 表示否）
 
-- ????????????? 
+- 【强制】表名不使用复数名词 
 
-- ????????? decimal,???? float ? double?
+- 【强制】小数类型为 decimal，禁止使用 float 和 double。
 
-- ??????????:id, create_time, update_time?
+- 【强制】表必备三字段：id, create_time, update_time。
 
-- ?????????????“????_????”?
+- 【推荐】表的命名最好是遵循“业务名称_表的作用”。
 
-  > ??:alipay_task / force_project / trade_config
+  > 正例：alipay_task / force_project / trade_config
 
-- ?????????,?????? * ?????????,?????????????
+- 【强制】在表查询中，一律不要使用 * 作为查询的字段列表，需要哪些字段必须明确写明。
 
   
 
@@ -5051,10 +5051,10 @@ Home Page.vue
 
 ```vue
   created() {
-    //??????token?
+    //获取路径里面token值
     this.tracingId = this.$route.query.tracingId
     //console.log(this.token)
-    if(this.tracingId) {//???????token?
+    if(this.tracingId) {//判断路径是否有token值
        this.googleLogin()
     }
 
@@ -5391,7 +5391,7 @@ public class DateUtil {
     private static final String dateFormat = "yyyy-MM-dd";
 
     /**
-     * ?????
+     * 格式化日期
      *
      * @param date
      * @return
@@ -5403,10 +5403,10 @@ public class DateUtil {
     }
 
     /**
-     * ???date???amount? ?
+     * 在日期date上增加amount天 。
      *
-     * @param date   ?????,?null
-     * @param amount ?????,?????
+     * @param date   处理的日期，非null
+     * @param amount 要加的天数，可能为负数
      */
     public static Date addDays(Date date, int amount) {
         Calendar now =Calendar.getInstance();
@@ -5462,7 +5462,7 @@ public class JwtUtils {
     }
 
     /**
-     * ??token???????
+     * 判断token是否存在与有效
      * @param jwtToken
      * @return
      */
@@ -5478,7 +5478,7 @@ public class JwtUtils {
     }
 
     /**
-     * ??token???????
+     * 判断token是否存在与有效
      * @param request
      * @return
      */
@@ -5495,7 +5495,7 @@ public class JwtUtils {
     }
 
     /**
-     * ??token????id
+     * 根据token获取会员id
      * @param request
      * @return
      */
@@ -5543,7 +5543,7 @@ public final class MD5 {
             return new String(chars);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            throw new RuntimeException("MD5????!!+" + e);
+            throw new RuntimeException("MD5加密出错！！+" + e);
         }
     }
 
@@ -5570,16 +5570,16 @@ import java.util.Map;
 
 @Data
 public class R<T> {
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "是否成功")
     private Boolean success;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "返回码")
     private Integer code;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "返回消息")
     private String message;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "返回数据")
     private Map<String, Object> data = new HashMap<>();
 
     private R() {
@@ -5657,7 +5657,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * ?????
+ * 获取随机数
  *
  * @author qianyi
  *
@@ -5679,7 +5679,7 @@ public class RandomUtil {
     }
 
     /**
-     * ????,??n???
+     * 给定数组，抽取n个数据
      * @param list
      * @param n
      * @return
@@ -5690,7 +5690,7 @@ public class RandomUtil {
 
         HashMap<Object, Object> hashMap = new HashMap<Object, Object>();
 
-        // ?????????HashMap
+        // 生成随机数字并存入HashMap
         for (int i = 0; i < list.size(); i++) {
 
             int number = random.nextInt(100) + 1;
@@ -5698,12 +5698,12 @@ public class RandomUtil {
             hashMap.put(number, i);
         }
 
-        // ?HashMap????
+        // 从HashMap导入数组
         Object[] robjs = hashMap.values().toArray();
 
         ArrayList r = new ArrayList();
 
-        // ?????????
+        // 遍历数组并打印数据
         for (int i = 0; i < n; i++) {
             r.add(list.get((int) robjs[i]));
             System.out.print(list.get((int) robjs[i]) + "\t");
@@ -5729,7 +5729,7 @@ import java.util.Random;
 public class OrderNoUtil {
 
     /**
-     * ?????
+     * 获取订单号
      * @return
      */
     public static String getOrderNo() {
@@ -5779,7 +5779,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * http?????
+ * http请求客户端
  */
 public class HttpClient {
     private String url;
@@ -5860,8 +5860,8 @@ public class HttpClient {
         if (param != null) {
             List<NameValuePair> nvps = new LinkedList<NameValuePair>();
             for (String key : param.keySet())
-                nvps.add(new BasicNameValuePair(key, param.get(key))); // ??
-            http.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8)); // ????
+                nvps.add(new BasicNameValuePair(key, param.get(key))); // 参数
+            http.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8)); // 设置参数
         }
         if (xmlParam != null) {
             http.setEntity(new StringEntity(xmlParam, Consts.UTF_8));
@@ -5875,7 +5875,7 @@ public class HttpClient {
             if (isHttps) {
                 SSLContext sslContext = new SSLContextBuilder()
                         .loadTrustMaterial(null, new TrustStrategy() {
-                            // ????
+                            // 信任所有
                             public boolean isTrusted(X509Certificate[] chain,
                                                      String authType)
                                     throws CertificateException {
@@ -5895,7 +5895,7 @@ public class HttpClient {
                     if (response.getStatusLine() != null)
                         statusCode = response.getStatusLine().getStatusCode();
                     HttpEntity entity = response.getEntity();
-                    // ????
+                    // 响应内容
                     content = EntityUtils.toString(entity, Consts.UTF_8);
                 }
             } finally {
@@ -5957,7 +5957,7 @@ public class ResponseUtil {
 
 ## SQL
 
-mySQL [???](https://gitee.com/longdada888/online-Education.git)
+mySQL [龙达达](https://gitee.com/longdada888/online-Education.git)
 
 ```mysql
 
@@ -6054,14 +6054,14 @@ Artifact: guli_parent
         <type>pom</type>
         <scope>import</scope>
         </dependency>
-        <!--mybatis-plus ???-->
+        <!--mybatis-plus 持久层-->
         <dependency>
         <groupId>com.baomidou</groupId>
         <artifactId>mybatis-plus-boot-starter</artifactId>
         <version>${mybatis-plus.version}</version>
         </dependency>
 
-        <!-- velocity ????, Mybatis Plus ??????? -->
+        <!-- velocity 模板引擎, Mybatis Plus 代码生成器需要 -->
         <dependency>
         <groupId>org.apache.velocity</groupId>
         <artifactId>velocity-engine-core</artifactId>
@@ -6088,7 +6088,7 @@ Artifact: guli_parent
         <version>${aliyun.oss.version}</version>
         </dependency>
 
-        <!--??????-->
+        <!--日期时间工具-->
         <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
@@ -6108,7 +6108,7 @@ Artifact: guli_parent
         <version>${poi.version}</version>
         </dependency>
 
-        <!--????-->
+        <!--文件上传-->
         <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
@@ -6287,7 +6287,7 @@ POM
             <artifactId>gson</artifactId>
         </dependency>
 
-        <!--????-->
+        <!--服务调用-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -6359,7 +6359,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
-@EnableDiscoveryClient  //????
+@EnableDiscoveryClient  //服务发现
 public class ApiGatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApiGatewayApplication.class);
@@ -6425,7 +6425,7 @@ import java.util.List;
 
 /**
  * <p>
- * ??Filter,???????????????????
+ * 全局Filter，统一处理会员登录与外部不允许访问的服务
  * </p>
  *
  * @author qy
@@ -6440,7 +6440,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
-        //????api??,????????
+        //谷粒学院api接口，校验用户必须登录
         if(antPathMatcher.match("/api/**/auth/**", path)) {
             List<String> tokenList = request.getHeaders().get("token");
             if(null == tokenList) {
@@ -6454,7 +6454,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
 //                }
             }
         }
-        //??????,???????
+        //内部服务接口，不允许外部访问
         if(antPathMatcher.match("/**/inner/**", path)) {
             ServerHttpResponse response = exchange.getResponse();
             return out(response);
@@ -6471,11 +6471,11 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
         JsonObject message = new JsonObject();
         message.addProperty("success", false);
         message.addProperty("code", 28004);
-        message.addProperty("data", "????");
+        message.addProperty("data", "鉴权失败");
         byte[] bits = message.toString().getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bits);
         //response.setStatusCode(HttpStatus.UNAUTHORIZED);
-        //????,????????????
+        //指定编码，否则在浏览器中会中文乱码
         response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
         return response.writeWith(Mono.just(buffer));
     }
@@ -6507,7 +6507,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * ?????????
+ * 覆盖默认的异常处理
  *
  */
 @Configuration
@@ -6567,9 +6567,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ???????
+ * 自定义异常处理
  *
- * <p>????JSON??HTML????<p>
+ * <p>异常时用JSON代替HTML异常信息<p>
  *
  */
 public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
@@ -6580,20 +6580,20 @@ public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
     }
 
     /**
-     * ??????
+     * 获取异常属性
      */
     @Override
     protected Map<String, Object> getErrorAttributes(ServerRequest request, boolean includeStackTrace) {
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
         map.put("code", 20005);
-        map.put("message", "????");
+        map.put("message", "网关失败");
         map.put("data", null);
         return map;
     }
 
     /**
-     * ?????????JSON?????
+     * 指定响应处理方法为JSON处理的方法
      * @param errorAttributes
      */
     @Override
@@ -6602,7 +6602,7 @@ public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
     }
 
     /**
-     * ??code?????HttpStatus
+     * 根据code获取对应的HttpStatus
      * @param errorAttributes
      */
     @Override
@@ -6667,18 +6667,18 @@ public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
 <!--        </dependency>-->
 
 
-        <!--hystrix??,????  @HystrixCommand -->
+        <!--hystrix依赖，主要是用  @HystrixCommand -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
         </dependency>
 
-        <!--????-->
+        <!--服务注册-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-        <!--????-->
+        <!--服务调用-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -6709,13 +6709,13 @@ public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- velocity ????, Mybatis Plus ??????? -->
+        <!-- velocity 模板引擎, Mybatis Plus 代码生成器需要 -->
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>
         </dependency>
 
-        <!--lombok???????:????lombok??-->
+        <!--lombok用来简化实体类：需要安装lombok插件-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -6794,7 +6794,7 @@ public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
     </properties>
 
 
-    <!-- ???????java????*.xml??????? -->
+    <!-- 项目打包时会将java目录中的*.xml文件也进行打包 -->
     <build>
         <resources>
             <resource>
@@ -6891,63 +6891,63 @@ mybatis-plus:
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration scan="true" scanPeriod="10 seconds">
-    <!-- ??????????TRACE < DEBUG < INFO < WARN < ERROR < FATAL,?????WARN,???WARN???????? -->
-    <!-- scan:???????true?,??????????,???????,????true -->
-    <!-- scanPeriod:??????????????????,??????????,?????????scan?true?,??????????????1??? -->
-    <!-- debug:???????true?,????logback??????,????logback?????????false? -->
+    <!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL，如果设置为WARN，则低于WARN的信息都不会输出 -->
+    <!-- scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true -->
+    <!-- scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
+    <!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
 
     <contextName>logback</contextName>
-    <!-- name????????,value?????????????????????logger??????????,???“${}”?????? -->
+    <!-- name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义变量后，可以使“${}”来使用变量。 -->
     <property name="log.path" value="E:/IdeaProjects/guli_log/edu"/> <!-- not working with \ -->
 
-    <!-- ???? -->
-    <!-- ??????:CONSOLE_LOG_PATTERN ?????? -->
-    <!-- magenta:?? -->
-    <!-- boldMagenta:??-->
-    <!-- cyan:?? -->
-    <!-- white:?? -->
-    <!-- magenta:?? -->
+    <!-- 彩色日志 -->
+    <!-- 配置格式变量：CONSOLE_LOG_PATTERN 彩色日志格式 -->
+    <!-- magenta:洋红 -->
+    <!-- boldMagenta:粗红-->
+    <!-- cyan:青色 -->
+    <!-- white:白色 -->
+    <!-- magenta:洋红 -->
     <property name="CONSOLE_LOG_PATTERN"
               value="%yellow(%date{yyyy-MM-dd HH:mm:ss}) |%highlight(%-5level) |%blue(%thread) |%blue(%file:%line) |%green(%logger) |%cyan(%msg%n)"/>
 
 
-    <!--??????-->
+    <!--输出到控制台-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <!--???appender??????,???????,????????????????????????-->
-        <!-- ??:???????INFO??,????????????DEBUG?????,?????? -->
+        <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
+        <!-- 例如：如果此处配置了INFO级别，则后面其他位置即使配置了DEBUG级别的日志，也不会被输出 -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
         <encoder>
             <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
-            <!-- ????? -->
+            <!-- 设置字符集 -->
             <charset>UTF-8</charset>
         </encoder>
     </appender>
 
 
-    <!--?????-->
+    <!--输出到文件-->
 
-    <!-- ?????? level? INFO ?? -->
+    <!-- 时间滚动输出 level为 INFO 日志 -->
     <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!-- ???????????????? -->
+        <!-- 正在记录的日志文件的路径及文件名 -->
         <file>${log.path}/log_info.log</file>
-        <!--????????-->
+        <!--日志文件输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
-        <!-- ??????????,???,????? -->
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- ???????????? -->
+            <!-- 每天日志归档路径以及格式 -->
             <fileNamePattern>${log.path}/info/log-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <!--????????-->
+            <!--日志文件保留天数-->
             <maxHistory>15</maxHistory>
         </rollingPolicy>
-        <!-- ????????info??? -->
+        <!-- 此日志文件只记录info级别的 -->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
@@ -6955,25 +6955,25 @@ mybatis-plus:
         </filter>
     </appender>
 
-    <!-- ?????? level? WARN ?? -->
+    <!-- 时间滚动输出 level为 WARN 日志 -->
     <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!-- ???????????????? -->
+        <!-- 正在记录的日志文件的路径及文件名 -->
         <file>${log.path}/log_warn.log</file>
-        <!--????????-->
+        <!--日志文件输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
-            <charset>UTF-8</charset> <!-- ??????? -->
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
         </encoder>
-        <!-- ??????????,???,????? -->
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/warn/log-warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <!--????????-->
+            <!--日志文件保留天数-->
             <maxHistory>15</maxHistory>
         </rollingPolicy>
-        <!-- ????????warn??? -->
+        <!-- 此日志文件只记录warn级别的 -->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>warn</level>
             <onMatch>ACCEPT</onMatch>
@@ -6982,25 +6982,25 @@ mybatis-plus:
     </appender>
 
 
-    <!-- ?????? level? ERROR ?? -->
+    <!-- 时间滚动输出 level为 ERROR 日志 -->
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!-- ???????????????? -->
+        <!-- 正在记录的日志文件的路径及文件名 -->
         <file>${log.path}/log_error.log</file>
-        <!--????????-->
+        <!--日志文件输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
-            <charset>UTF-8</charset> <!-- ??????? -->
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
         </encoder>
-        <!-- ??????????,???,????? -->
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/error/log-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <!--????????-->
+            <!--日志文件保留天数-->
             <maxHistory>15</maxHistory>
         </rollingPolicy>
-        <!-- ????????ERROR??? -->
+        <!-- 此日志文件只记录ERROR级别的 -->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
@@ -7009,27 +7009,27 @@ mybatis-plus:
     </appender>
 
     <!--
-        <logger>?????????????????????????????<appender>?
-        <logger>????name??,
-        ?????level??????addtivity???
-        name:??????logger?????????????????
-        level:????????,?????:TRACE, DEBUG, INFO, WARN, ERROR, ALL ? OFF,
-              ????????,????logger??????????
+        <logger>用来设置某一个包或者具体的某一个类的日志打印级别、以及指定<appender>。
+        <logger>仅有一个name属性，
+        一个可选的level和一个可选的addtivity属性。
+        name:用来指定受此logger约束的某一个包或者具体的某一个类。
+        level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，
+              如果未设置此属性，那么当前logger将会继承上级的级别。
     -->
     <!--
-        ??mybatis???,sql???debug?????,?????????info,??????sql????,???????:
-        ????<root level="INFO">??<root level="DEBUG">??????sql,?????????????????
-        ????????mapper?????DEBUG??,????,????sql?????,??????DEBUG??:
+        使用mybatis的时候，sql语句是debug下才会打印，而这里我们只配置了info，所以想要查看sql语句的话，有以下两种操作：
+        第一种把<root level="INFO">改成<root level="DEBUG">这样就会打印sql，不过这样日志那边会出现很多其他消息
+        第二种就是单独给mapper下目录配置DEBUG模式，代码如下，这样配置sql语句会打印，其他还是正常DEBUG级别：
      -->
-    <!--????:?????-->
+    <!--开发环境:打印控制台-->
     <springProfile name="dev">
-        <!--????????debug??,??mybatis?sql??-->
+        <!--可以输出项目中的debug日志，包括mybatis的sql日志-->
         <logger name="com.guli" level="INFO"/>
 
         <!--
-            root???????,??????????????,????level??
-            level:????????,?????:TRACE, DEBUG, INFO, WARN, ERROR, ALL ? OFF,???DEBUG
-            ?????????appender???
+            root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性
+            level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，默认是DEBUG
+            可以包含零个或多个appender元素。
         -->
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
@@ -7040,7 +7040,7 @@ mybatis-plus:
     </springProfile>
 
 
-    <!--????:?????-->
+    <!--生产环境:输出到文件-->
     <springProfile name="pro">
 
         <root level="INFO">
@@ -7213,7 +7213,7 @@ import java.util.List;
 
 /**
  * <p>
- * ?? ?????
+ * 课程 前端控制器
  * </p>
  *
  * @author atguigu
@@ -7287,7 +7287,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ?? ?????
+ * 评论 前端控制器
  * </p>
  *
  * @author atguigu
@@ -7345,7 +7345,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ?? ?????
+ * 课程 前端控制器
  * </p>
  *
  * @author atguigu
@@ -7488,7 +7488,7 @@ import java.util.List;
 
 /**
  * <p>
- * ???? ?????
+ * 课程科目 前端控制器
  * </p>
  *
  * @author atguigu
@@ -7542,14 +7542,14 @@ import java.util.List;
 
 /**
  * <p>
- * ?? ?????
+ * 讲师 前端控制器
  * </p>
  *
  * @author atguigu
  * @since 2022-06-27
  */
 
-@Api(description = "????")
+@Api(description = "讲师管理")
 @RestController
 @RequestMapping("/eduservice/edu-teacher")
 //@CrossOrigin
@@ -7558,17 +7558,17 @@ public class EduTeacherController {
     @Autowired
     private EduTeacherService eduTeacherService = new EduTeacherServiceImpl();
 
-    @ApiOperation(value = "??????")
+    @ApiOperation(value = "所有讲师列表")
     @GetMapping("/findAll")
     public R findAll() {
         List<EduTeacher> list = eduTeacherService.list(null);
         return R.ok().data("items", list);
     }
 
-    @ApiOperation(value = "??ID????")
+    @ApiOperation(value = "根据ID删除讲师")
     @DeleteMapping("/{id}")
     public R removeTeacher(
-            @ApiParam(name ="id", value ="??ID", required = true)
+            @ApiParam(name ="id", value ="讲师ID", required = true)
             @PathVariable String id) {
         boolean flag = eduTeacherService.removeById(id);
         if (flag) {
@@ -7670,7 +7670,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
- * ???? ?????
+ * 课程视频 前端控制器
  * </p>
  *
  * @author atguigu
@@ -7999,49 +7999,49 @@ public class CourseFrontRelatedVo {
 
     private String id;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程标题")
     private String title;
 
-    @ApiModelProperty(value = "??????,???0??????")
+    @ApiModelProperty(value = "课程销售价格，设置为0则可免费观看")
     private BigDecimal price;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "总课时")
     private Integer lessonNum;
 
-    @ApiModelProperty(value = "????????")
+    @ApiModelProperty(value = "课程封面图片路径")
     private String cover;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "销售数量")
     private Long buyCount;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "浏览数量")
     private Long viewCount;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程简介")
     private String description;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "讲师ID")
     private String teacherId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "讲师姓名")
     private String teacherName;
 
-    @ApiModelProperty(value = "????,???????")
+    @ApiModelProperty(value = "讲师资历,一句话说明讲师")
     private String intro;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "讲师头像")
     private String avatar;
 
-    @ApiModelProperty(value = "????ID")
+    @ApiModelProperty(value = "课程类别ID")
     private String subjectCatId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "类别名称")
     private String subjectCat;
 
-    @ApiModelProperty(value = "????ID")
+    @ApiModelProperty(value = "课程类别ID")
     private String subjectId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "类别名称")
     private String subject;
 
 }
@@ -8064,7 +8064,7 @@ public class CourseFinalVo  {
     private String subjectCategory;
     private String subject;
     private String teacherName;
-    private String price;//?????
+    private String price;//只用于显示
 }
 
 ```
@@ -8079,32 +8079,32 @@ import java.math.BigDecimal;
 
 @Data
 public class CourseInfoVo {
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "课程ID")
     private String id;
 
-    @ApiModelProperty(value = "????ID")
+    @ApiModelProperty(value = "课程讲师ID")
     private String teacherId;
 
-    @ApiModelProperty(value = "????ID")
+    @ApiModelProperty(value = "课程专业ID")
     private String subjectId;
 
-    @ApiModelProperty(value = "??????ID")
+    @ApiModelProperty(value = "课程专业父级ID")
     private String subjectParentId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程标题")
     private String title;
 
-    @ApiModelProperty(value = "??????,???0??????")
+    @ApiModelProperty(value = "课程销售价格，设置为0则可免费观看")
     // 0.01
     private BigDecimal price;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "总课时")
     private Integer lessonNum;
 
-    @ApiModelProperty(value = "????????")
+    @ApiModelProperty(value = "课程封面图片路径")
     private String cover;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程简介")
     private String description;
 }
 
@@ -8122,7 +8122,7 @@ public class CourseQuery {
 
     private String status;
 
-    private String begin;//??,??????String??,????????????????
+    private String begin;//注意，这里使用的是String类型，前端传过来的数据无需进行类型转换
 
     private String end;
 }
@@ -8138,16 +8138,16 @@ import lombok.Data;
 @Data
 public class TeacherQuery {
 
-    @ApiModelProperty(value = "????,????")
+    @ApiModelProperty(value = "教师名称,模糊查询")
     private String name;
 
-    @ApiModelProperty(value = "?? 1???? 2????")
+    @ApiModelProperty(value = "头衔 1高级讲师 2首席讲师")
     private Integer level;
 
-    @ApiModelProperty(value = "??????", example = "2019-01-01 10:10:10")
-    private String begin;//??,??????String??,????????????????
+    @ApiModelProperty(value = "查询开始时间", example = "2019-01-01 10:10:10")
+    private String begin;//注意，这里使用的是String类型，前端传过来的数据无需进行类型转换
 
-    @ApiModelProperty(value = "??????", example = "2019-12-01 10:10:10")
+    @ApiModelProperty(value = "查询结束时间", example = "2019-12-01 10:10:10")
     private String end;
 
 }
@@ -8172,7 +8172,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ??
+ * 课程
  * </p>
  *
  * @author atguigu
@@ -8181,29 +8181,29 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="EduChapter??", description="??")
+@ApiModel(value="EduChapter对象", description="课程")
 public class EduChapter implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "章节ID")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "课程ID")
     private String courseId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "章节名称")
     private String title;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "显示排序")
     private Integer sort;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -8229,7 +8229,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ??
+ * 评论
  * </p>
  *
  * @author atguigu
@@ -8238,42 +8238,42 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="EduComment??", description="??")
+@ApiModel(value="EduComment对象", description="评论")
 public class EduComment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "讲师ID")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "课程id")
     private String courseId;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "讲师id")
     private String teacherId;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "会员id")
     private String memberId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "会员昵称")
     private String nickname;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "会员头像")
     private String avatar;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "评论内容")
     private String content;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     @TableLogic
     private Boolean isDeleted;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -8300,7 +8300,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ??
+ * 课程
  * </p>
  *
  * @author atguigu
@@ -8309,56 +8309,56 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="EduCourse??", description="??")
+@ApiModel(value="EduCourse对象", description="课程")
 public class EduCourse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "课程ID")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "????ID")
+    @ApiModelProperty(value = "课程讲师ID")
     private String teacherId;
 
-    @ApiModelProperty(value = "????ID")
+    @ApiModelProperty(value = "课程专业ID")
     private String subjectId;
 
     private String subjectParentId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程标题")
     private String title;
 
-    @ApiModelProperty(value = "??????,???0??????")
+    @ApiModelProperty(value = "课程销售价格，设置为0则可免费观看")
     private BigDecimal price;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "总课时")
     private Integer lessonNum;
 
-    @ApiModelProperty(value = "????????")
+    @ApiModelProperty(value = "课程封面图片路径")
     private String cover;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "销售数量")
     private Long buyCount;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "浏览数量")
     private Long viewCount;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "乐观锁")
     private Long version;
 
-    @ApiModelProperty(value = "???? Draft???  Normal???")
+    @ApiModelProperty(value = "课程状态 Draft未发布  Normal已发布")
     private String status;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     @TableLogic
     private Integer isDeleted;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -8385,7 +8385,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ????
+ * 课程简介
  * </p>
  *
  * @author atguigu
@@ -8394,23 +8394,23 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="EduCourseDescription??", description="????")
+@ApiModel(value="EduCourseDescription对象", description="课程简介")
 public class EduCourseDescription implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "课程ID")
     @TableId(value = "id", type = IdType.INPUT)
     private String id;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程简介")
     private String description;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -8437,7 +8437,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ????
+ * 课程科目
  * </p>
  *
  * @author atguigu
@@ -8446,29 +8446,29 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="EduSubject??", description="????")
+@ApiModel(value="EduSubject对象", description="课程科目")
 public class EduSubject implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "????ID")
+    @ApiModelProperty(value = "课程类别ID")
     @TableId(type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "类别名称")
     private String title;
 
-    @ApiModelProperty(value = "?ID")
+    @ApiModelProperty(value = "父ID")
     private String parentId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "排序字段")
     private Integer sort;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -8494,7 +8494,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ??
+ * 讲师
  * </p>
  *
  * @author atguigu
@@ -8503,42 +8503,42 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="EduTeacher??", description="??")
+@ApiModel(value="EduTeacher对象", description="讲师")
 public class EduTeacher implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "讲师ID")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "讲师姓名")
     private String name;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "讲师简介")
     private String intro;
 
-    @ApiModelProperty(value = "????,???????")
+    @ApiModelProperty(value = "讲师资历,一句话说明讲师")
     private String career;
 
-    @ApiModelProperty(value = "?? 1???? 2????")
+    @ApiModelProperty(value = "头衔 1高级讲师 2首席讲师")
     private Integer level;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "讲师头像")
     private String avatar;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "排序")
     private Integer sort;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     @TableLogic
     private Boolean isDeleted;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -8563,7 +8563,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ????
+ * 课程视频
  * </p>
  *
  * @author atguigu
@@ -8572,57 +8572,57 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="EduVideo??", description="????")
+@ApiModel(value="EduVideo对象", description="课程视频")
 public class EduVideo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "视频ID")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "课程ID")
     private String courseId;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "章节ID")
     private String chapterId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "节点名称")
     private String title;
 
-    @ApiModelProperty(value = "??????")
+    @ApiModelProperty(value = "云端视频资源")
     private String videoSourceId;
 
-    @ApiModelProperty(value = "??????")
+    @ApiModelProperty(value = "原始文件名称")
     private String videoOriginalName;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "排序字段")
     private Integer sort;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "播放次数")
     private Long playCount;
 
-    @ApiModelProperty(value = "??????:0?? 1??")
+    @ApiModelProperty(value = "是否可以试听：0收费 1免费")
     private Boolean isFree;
 
-    @ApiModelProperty(value = "????(?)")
+    @ApiModelProperty(value = "视频时长（秒）")
     private Float duration;
 
-    @ApiModelProperty(value = "Empty??? Transcoding???  Normal??")
+    @ApiModelProperty(value = "Empty未上传 Transcoding转码中  Normal正常")
     private String status;
 
-    @ApiModelProperty(value = "???????(??)")
+    @ApiModelProperty(value = "视频源文件大小（字节）")
     private Long size;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "乐观锁")
     @Version
     private Long version;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -8661,7 +8661,7 @@ public class ExcelReadListener extends AnalysisEventListener<SubjectData> {
     @Override
     public void invoke(SubjectData subjectData, AnalysisContext analysisContext) {
         if (subjectData == null) {
-            throw new GuliException(20001, "Excel ??????");
+            throw new GuliException(20001, "Excel 数据不能为空");
         }
 
         EduSubject mainCategory = existMainCategory(subjectData.getMainCat());
@@ -8788,7 +8788,7 @@ import java.util.List;
 
 /**
  * <p>
- * ?? ?????
+ * 课程 服务实现类
  * </p>
  *
  * @author atguigu
@@ -8881,7 +8881,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ?? ?????
+ * 评论 服务实现类
  * </p>
  *
  * @author atguigu
@@ -8951,7 +8951,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ?? ?????
+ * 课程 服务实现类
  * </p>
  *
  * @author atguigu
@@ -9148,7 +9148,7 @@ import java.util.List;
 
 /**
  * <p>
- * ???? ?????
+ * 课程科目 服务实现类
  * </p>
  *
  * @author atguigu
@@ -9233,7 +9233,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ?? ?????
+ * 讲师 服务实现类
  * </p>
  *
  * @author atguigu
@@ -9290,7 +9290,7 @@ import java.util.List;
 
 /**
  * <p>
- * ???? ?????
+ * 课程视频 服务实现类
  * </p>
  *
  * @author atguigu
@@ -9466,23 +9466,23 @@ public class IndexController {
     private IndexService indexService;
 
     /**
-     * ??token??????
+     * 根据token获取用户信息
      */
     @GetMapping("info")
     public R info(){
-        //???????????
+        //获取当前登录用户用户名
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Map<String, Object> userInfo = indexService.getUserInfo(username);
         return R.ok().data(userInfo);
     }
 
     /**
-     * ????
+     * 获取菜单
      * @return
      */
     @GetMapping("menu")
     public R getMenu(){
-        //???????????
+        //获取当前登录用户用户名
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         List<JSONObject> permissionList = indexService.getMenu(username);
         return R.ok().data("permissionList", permissionList);
@@ -9512,7 +9512,7 @@ import java.util.List;
 
 /**
  * <p>
- * ?? ????
+ * 权限 菜单管理
  * </p>
  *
  * @author testjava
@@ -9526,29 +9526,29 @@ public class PermissionController {
     @Autowired
     private PermissionService permissionService;
 
-    //??????
-    @ApiOperation(value = "??????")
+    //获取全部菜单
+    @ApiOperation(value = "查询所有菜单")
     @GetMapping
     public R indexAllPermission() {
         List<Permission> list = permissionService.queryAllMenu();
         return R.ok().data("children",list);
     }
 
-    @ApiOperation(value = "??????")
+    @ApiOperation(value = "递归删除菜单")
     @DeleteMapping("remove/{id}")
     public R remove(@PathVariable String id) {
         permissionService.removeChildById(id);
         return R.ok();
     }
 
-    @ApiOperation(value = "???????")
+    @ApiOperation(value = "给角色分配权限")
     @PostMapping("/doAssign")
     public R doAssign(String roleId,String[] permissionId) {
         permissionService.saveRolePermissionRelationShip(roleId,permissionId);
         return R.ok();
     }
 
-    @ApiOperation(value = "????????")
+    @ApiOperation(value = "根据角色获取菜单")
     @GetMapping("toAssign/{roleId}")
     public R toAssign(@PathVariable String roleId) {
         List<Permission> list = permissionService.selectAllMenu(roleId);
@@ -9557,14 +9557,14 @@ public class PermissionController {
 
 
 
-    @ApiOperation(value = "????")
+    @ApiOperation(value = "新增菜单")
     @PostMapping("save")
     public R save(@RequestBody Permission permission) {
         permissionService.save(permission);
         return R.ok();
     }
 
-    @ApiOperation(value = "????")
+    @ApiOperation(value = "修改菜单")
     @PutMapping("update")
     public R updateById(@RequestBody Permission permission) {
         permissionService.updateById(permission);
@@ -9595,7 +9595,7 @@ import java.util.List;
 
 /**
  * <p>
- *  ?????
+ *  前端控制器
  * </p>
  *
  * @author testjava
@@ -9609,13 +9609,13 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @ApiOperation(value = "????????")
+    @ApiOperation(value = "获取角色分页列表")
     @GetMapping("{page}/{limit}")
     public R index(
-            @ApiParam(name = "page", value = "????", required = true)
+            @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,
 
-            @ApiParam(name = "limit", value = "?????", required = true)
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
             @PathVariable Long limit,
             Role role) {
         Page<Role> pageParam = new Page<>(page, limit);
@@ -9627,35 +9627,35 @@ public class RoleController {
         return R.ok().data("items", pageParam.getRecords()).data("total", pageParam.getTotal());
     }
 
-    @ApiOperation(value = "????")
+    @ApiOperation(value = "获取角色")
     @GetMapping("get/{id}")
     public R get(@PathVariable String id) {
         Role role = roleService.getById(id);
         return R.ok().data("item", role);
     }
 
-    @ApiOperation(value = "????")
+    @ApiOperation(value = "新增角色")
     @PostMapping("save")
     public R save(@RequestBody Role role) {
         roleService.save(role);
         return R.ok();
     }
 
-    @ApiOperation(value = "????")
+    @ApiOperation(value = "修改角色")
     @PutMapping("update")
     public R updateById(@RequestBody Role role) {
         roleService.updateById(role);
         return R.ok();
     }
 
-    @ApiOperation(value = "????")
+    @ApiOperation(value = "删除角色")
     @DeleteMapping("remove/{id}")
     public R remove(@PathVariable String id) {
         roleService.removeById(id);
         return R.ok();
     }
 
-    @ApiOperation(value = "??id??????")
+    @ApiOperation(value = "根据id列表删除角色")
     @DeleteMapping("batchRemove")
     public R batchRemove(@RequestBody List<String> idList) {
         roleService.removeByIds(idList);
@@ -9689,7 +9689,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ??? ?????
+ * 用户表 前端控制器
  * </p>
  *
  * @author testjava
@@ -9706,16 +9706,16 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
-    @ApiOperation(value = "??????????")
+    @ApiOperation(value = "获取管理用户分页列表")
     @GetMapping("{page}/{limit}")
     public R index(
-            @ApiParam(name = "page", value = "????", required = true)
+            @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,
 
-            @ApiParam(name = "limit", value = "?????", required = true)
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
             @PathVariable Long limit,
 
-            @ApiParam(name = "courseQuery", value = "????", required = false)
+            @ApiParam(name = "courseQuery", value = "查询对象", required = false)
              User userQueryVo) {
         Page<User> pageParam = new Page<>(page, limit);
         QueryWrapper<User> wrapper = new QueryWrapper<>();
@@ -9727,7 +9727,7 @@ public class UserController {
         return R.ok().data("items", pageModel.getRecords()).data("total", pageModel.getTotal());
     }
 
-    @ApiOperation(value = "??????")
+    @ApiOperation(value = "新增管理用户")
     @PostMapping("save")
     public R save(@RequestBody User user) {
         user.setPassword(MD5.encrypt(user.getPassword()));
@@ -9735,35 +9735,35 @@ public class UserController {
         return R.ok();
     }
 
-    @ApiOperation(value = "??????")
+    @ApiOperation(value = "修改管理用户")
     @PutMapping("update")
     public R updateById(@RequestBody User user) {
         userService.updateById(user);
         return R.ok();
     }
 
-    @ApiOperation(value = "??????")
+    @ApiOperation(value = "删除管理用户")
     @DeleteMapping("remove/{id}")
     public R remove(@PathVariable String id) {
         userService.removeById(id);
         return R.ok();
     }
 
-    @ApiOperation(value = "??id????????")
+    @ApiOperation(value = "根据id列表删除管理用户")
     @DeleteMapping("batchRemove")
     public R batchRemove(@RequestBody List<String> idList) {
         userService.removeByIds(idList);
         return R.ok();
     }
 
-    @ApiOperation(value = "??????????")
+    @ApiOperation(value = "根据用户获取角色数据")
     @GetMapping("/toAssign/{userId}")
     public R toAssign(@PathVariable String userId) {
         Map<String, Object> roleMap = roleService.findRoleByUserId(userId);
         return R.ok().data(roleMap);
     }
 
-    @ApiOperation(value = "????????")
+    @ApiOperation(value = "根据用户分配角色")
     @PostMapping("/doAssign")
     public R doAssign(@RequestParam String userId,@RequestParam String[] roleId) {
         roleService.saveUserRoleRealtionShip(userId,roleId);
@@ -9793,7 +9793,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ??
+ * 权限
  * </p>
  *
  * @author testjava
@@ -9803,61 +9803,61 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("acl_permission")
-@ApiModel(value="Permission??", description="??")
+@ApiModel(value="Permission对象", description="权限")
 public class Permission implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "编号")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "所属上级")
     private String pid;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "??(1:??,2:??)")
+    @ApiModelProperty(value = "类型(1:菜单,2:按钮)")
     private Integer type;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "权限值")
     private String permissionValue;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "访问路径")
     private String path;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "组件路径")
     private String component;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "图标")
     private String icon;
 
-    @ApiModelProperty(value = "??(0:??,1:??)")
+    @ApiModelProperty(value = "状态(0:禁止,1:正常)")
     private Integer status;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "层级")
     @TableField(exist = false)
     private Integer level;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "下级")
     @TableField(exist = false)
     private List<Permission> children;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "是否选中")
     @TableField(exist = false)
     private boolean isSelect;
 
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     private Boolean isDeleted;
 
     @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     private Date gmtCreate;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     private Date gmtModified;
 
 
@@ -9890,33 +9890,33 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("acl_role")
-@ApiModel(value="Role??", description="")
+@ApiModel(value="Role对象", description="")
 public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "角色id")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "角色名称")
     private String roleName;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "角色编码")
     private String roleCode;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     private Boolean isDeleted;
 
     @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     private Date gmtCreate;
 
     @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     private Date gmtModified;
 
 
@@ -9939,7 +9939,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ????
+ * 角色权限
  * </p>
  *
  * @author testjava
@@ -9949,7 +9949,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("acl_role_permission")
-@ApiModel(value="RolePermission??", description="????")
+@ApiModel(value="RolePermission对象", description="角色权限")
 public class RolePermission implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -9961,15 +9961,15 @@ public class RolePermission implements Serializable {
 
     private String permissionId;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     private Boolean isDeleted;
 
     @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     private Date gmtCreate;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     private Date gmtModified;
 
 
@@ -9992,7 +9992,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ???
+ * 用户表
  * </p>
  *
  * @author testjava
@@ -10002,39 +10002,39 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("acl_user")
-@ApiModel(value="User??", description="???")
+@ApiModel(value="User对象", description="用户表")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "会员id")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "??openid")
+    @ApiModelProperty(value = "微信openid")
     private String username;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "密码")
     private String password;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "昵称")
     private String nickName;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "用户头像")
     private String salt;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "用户签名")
     private String token;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     private Boolean isDeleted;
 
     @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     private Date gmtCreate;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     private Date gmtModified;
 
 
@@ -10067,30 +10067,30 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("acl_user_role")
-@ApiModel(value="UserRole??", description="")
+@ApiModel(value="UserRole对象", description="")
 public class UserRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "主键id")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "角色id")
     private String roleId;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "用户id")
     private String userId;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     private Boolean isDeleted;
 
     @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     private Date gmtCreate;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     private Date gmtModified;
 
 
@@ -10114,7 +10114,7 @@ import java.util.List;
 
 /**
  * <p>
- * ??????????????????
+ * 根据权限数据构建登录用户左侧菜单数据
  * </p>
  *
  * @author qy
@@ -10123,7 +10123,7 @@ import java.util.List;
 public class MemuHelper {
 
     /**
-     * ????
+     * 构建菜单
      * @param treeNodes
      * @return
      */
@@ -10131,7 +10131,7 @@ public class MemuHelper {
         List<JSONObject> meuns = new ArrayList<>();
         if(treeNodes.size() == 1) {
             Permission topNode = treeNodes.get(0);
-            //??????
+            //左侧一级菜单
             List<Permission> oneMeunList = topNode.getChildren();
             for(Permission one :oneMeunList) {
                 JSONObject oneMeun = new JSONObject();
@@ -10254,7 +10254,7 @@ public class PermissionHelper {
         <result property="gmtModified" column="gmt_modified"/>
     </resultMap>
 
-    <!-- ??select???????? -->
+    <!-- 用于select查询公用抽取的列 -->
     <sql id="columns">
         p.id,p.pid,p.name,p.type,p.permission_value,path,p.component,p.icon,p.status,p.is_deleted,p.gmt_create,p.gmt_modified
     </sql>
@@ -10336,7 +10336,7 @@ public class IndexServiceImpl implements IndexService {
     private RedisTemplate redisTemplate;
 
     /**
-     * ?????????????
+     * 根据用户名获取用户登录信息
      *
      * @param username
      * @return
@@ -10348,15 +10348,15 @@ public class IndexServiceImpl implements IndexService {
             //throw new GuliException(ResultCodeEnum.FETCH_USERINFO_ERROR);
         }
 
-        //????id????
+        //根据用户id获取角色
         List<Role> roleList = roleService.selectRoleByUserId(user.getId());
         List<String> roleNameList = roleList.stream().map(item -> item.getRoleName()).collect(Collectors.toList());
         if(roleNameList.size() == 0) {
-            //????????????,????,??????,???????
+            //前端框架必须返回一个角色，否则报错，如果没有角色，返回一个空角色
             roleNameList.add("");
         }
 
-        //????id???????
+        //根据用户id获取操作权限值
         List<String> permissionValueList = permissionService.selectPermissionValueByUserId(user.getId());
         redisTemplate.opsForValue().set(username, permissionValueList);
 
@@ -10368,14 +10368,14 @@ public class IndexServiceImpl implements IndexService {
     }
 
     /**
-     * ???????????
+     * 根据用户名获取动态菜单
      * @param username
      * @return
      */
     public List<JSONObject> getMenu(String username) {
         User user = userService.selectByUsername(username);
 
-        //????id????????
+        //根据用户id获取用户菜单权限
         List<JSONObject> permissionList = permissionService.selectPermissionByUserId(user.getId());
         return permissionList;
     }
@@ -10410,7 +10410,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- * ?? ?????
+ * 权限 服务实现类
  * </p>
  *
  * @author testjava
@@ -10425,7 +10425,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     @Autowired
     private UserService userService;
 
-    //??????
+    //获取全部菜单
     @Override
     public List<Permission> queryAllMenu() {
         QueryWrapper<Permission> wrapper = new QueryWrapper<>();
@@ -10435,14 +10435,14 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
 
         return resultList;
     }
-    //????????
+    //根据角色获取菜单
     @Override
     public List<Permission> selectAllMenu(String roleId) {
         List<Permission> allPermissionList = baseMapper.selectList(new QueryWrapper<Permission>().orderByAsc("CAST(id AS SIGNED)"));
 
-        //????id??????
+        //根据角色id获取角色权限
         List<RolePermission> rolePermissionList = rolePermissionService.list(new QueryWrapper<RolePermission>().eq("role_id",roleId));
-        //?????id???????Map??
+        //转换给角色id与角色权限对应Map对象
 //        List<String> permissionIdList = rolePermissionList.stream().map(e -> e.getPermissionId()).collect(Collectors.toList());
 //        allPermissionList.forEach(permission -> {
 //            if(permissionIdList.contains(permission.getId())) {
@@ -10466,7 +10466,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         return permissionList;
     }
 
-    //???????
+    //给角色分配权限
     @Override
     public void saveRolePermissionRelationShip(String roleId, String[] permissionIds) {
         rolePermissionService.remove(new QueryWrapper<RolePermission>().eq("role_id", roleId));
@@ -10487,7 +10487,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         rolePermissionService.saveBatch(rolePermissionList);
     }
 
-    //??????
+    //递归删除菜单
     @Override
     public void removeChildById(String id) {
         List<String> idList = new ArrayList<>();
@@ -10497,13 +10497,13 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
 
-    //????id??????
+    //根据用户id获取用户菜单
     @Override
     public List<String> selectPermissionValueByUserId(String id) {
 
         List<String> selectPermissionValueList = null;
         if(this.isSysAdmin(id)) {
-            //????????,??????
+            //如果是系统管理员，获取所有权限
             selectPermissionValueList = baseMapper.selectAllPermissionValue();
         } else {
             selectPermissionValueList = baseMapper.selectPermissionValueByUserId(id);
@@ -10515,7 +10515,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     public List<JSONObject> selectPermissionByUserId(String userId) {
         List<Permission> selectPermissionList = null;
         if(this.isSysAdmin(userId)) {
-            //????????,??????
+            //如果是超级管理员，获取所有菜单
             selectPermissionList = baseMapper.selectList(null);
         } else {
             selectPermissionList = baseMapper.selectPermissionByUserId(userId);
@@ -10527,7 +10527,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
     /**
-     * ???????????
+     * 判断用户是否系统管理员
      * @param userId
      * @return
      */
@@ -10541,7 +10541,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
     /**
-     *	???????
+     *	递归获取子节点
      * @param id
      * @param idList
      */
@@ -10554,7 +10554,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
     /**
-     * ?????????
+     * 使用递归方法建菜单
      * @param treeNodes
      * @return
      */
@@ -10570,7 +10570,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
     /**
-     * ???????
+     * 递归查找子节点
      * @param treeNodes
      * @return
      */
@@ -10603,18 +10603,18 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         });
     }
 
-    //2 ??????id,?????????id,???list??
+    //2 根据当前菜单id，查询菜单里面子菜单id，封装到list集合
     private void selectPermissionChildById(String id, List<String> idList) {
-        //?????????id
+        //查询菜单里面子菜单id
         QueryWrapper<Permission>  wrapper = new QueryWrapper<>();
         wrapper.eq("pid",id);
         wrapper.select("id");
         List<Permission> childIdList = baseMapper.selectList(wrapper);
-        //?childIdList????id?????,??idList??,?????
+        //把childIdList里面菜单id值获取出来，封装idList里面，做递归查询
         childIdList.stream().forEach(item -> {
-            //??idList??
+            //封装idList里面
             idList.add(item.getId());
-            //????
+            //递归查询
             this.selectPermissionChildById(item.getId(),idList);
         });
     }
@@ -10645,7 +10645,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *  ?????
+ *  服务实现类
  * </p>
  *
  * @author testjava
@@ -10658,21 +10658,21 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     private UserRoleService userRoleService;
 
 
-    //??????????
+    //根据用户获取角色数据
     @Override
     public Map<String, Object> findRoleByUserId(String userId) {
-        //???????
+        //查询所有的角色
         List<Role> allRolesList =baseMapper.selectList(null);
 
-        //????id,?????????id
+        //根据用户id，查询用户拥有的角色id
         List<UserRole> existUserRoleList = userRoleService.list(new QueryWrapper<UserRole>().eq("user_id", userId).select("role_id"));
 
         List<String> existRoleList = existUserRoleList.stream().map(c->c.getRoleId()).collect(Collectors.toList());
 
-        //???????
+        //对角色进行分类
         List<Role> assignRoles = new ArrayList<Role>();
         for (Role role : allRolesList) {
-            //???
+            //已分配
             if(existRoleList.contains(role.getId())) {
                 assignRoles.add(role);
             }
@@ -10684,7 +10684,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         return roleMap;
     }
 
-    //????????
+    //根据用户分配角色
     @Override
     public void saveUserRoleRealtionShip(String userId, String[] roleIds) {
         userRoleService.remove(new QueryWrapper<UserRole>().eq("user_id", userId));
@@ -10703,7 +10703,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     public List<Role> selectRoleByUserId(String id) {
-        //????id?????id
+        //根据用户id拥有的角色id
         List<UserRole> userRoleList = userRoleService.list(new QueryWrapper<UserRole>().eq("user_id", id).select("role_id"));
         List<String> roleIdList = userRoleList.stream().map(item -> item.getRoleId()).collect(Collectors.toList());
         List<Role> roleList = new ArrayList<>();
@@ -10737,7 +10737,7 @@ import java.util.List;
 
 /**
  * <p>
- * ???userDetailsService - ??????
+ * 自定义userDetailsService - 认证用户详情
  * </p>
  *
  * @author qy
@@ -10753,20 +10753,20 @@ public class UserDetailsServiceImpl implements UserDetailsService  {
     private PermissionService permissionService;
 
     /***
-     * ??????????
+     * 根据账号获取用户信息
      * @param username:
      * @return: org.springframework.security.core.userdetails.UserDetails
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // ???????????
+        // 从数据库中取出用户信息
         User user = userService.selectByUsername(username);
 
-        // ????????
+        // 判断用户是否存在
         if (null == user){
-//            throw new UsernameNotFoundException("??????!");
+//            throw new UsernameNotFoundException("用户名不存在！");
         }
-        // ??UserDetails???
+        // 返回UserDetails实现类
         com.atguigu.security.entity.User curUser = new com.atguigu.security.entity.User();
         BeanUtils.copyProperties(user,curUser);
 
@@ -10792,7 +10792,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- * ??? ?????
+ * 用户表 服务实现类
  * </p>
  *
  * @author testjava
@@ -10957,7 +10957,7 @@ import java.util.List;
 
 /**
  * <p>
- * ??banner? ?????
+ * 首页banner表 前端控制器
  * </p>
  *
  * @author atguigu
@@ -11030,7 +11030,7 @@ import java.util.List;
 
 /**
  * <p>
- * ??banner? ?????
+ * 首页banner表 前端控制器
  * </p>
  *
  * @author atguigu
@@ -11075,7 +11075,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ??banner?
+ * 首页banner表
  * </p>
  *
  * @author atguigu
@@ -11085,7 +11085,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("cms_banner")
-@ApiModel(value="Banner??", description="??banner?")
+@ApiModel(value="Banner对象", description="首页banner表")
 public class Banner implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -11094,27 +11094,27 @@ public class Banner implements Serializable {
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "标题")
     private String title;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "图片地址")
     private String imageUrl;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "链接地址")
     private String linkUrl;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "排序")
     private Integer sort;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     @TableLogic
     private Boolean isDeleted;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -11148,7 +11148,7 @@ import java.util.List;
 
 /**
  * <p>
- * ??banner? ?????
+ * 首页banner表 服务实现类
  * </p>
  *
  * @author atguigu
@@ -11339,7 +11339,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
- * ?? ?????
+ * 订单 前端控制器
  * </p>
  *
  * @author atguigu
@@ -11399,7 +11399,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ????? ?????
+ * 支付日志表 前端控制器
  * </p>
  *
  * @author atguigu
@@ -11464,7 +11464,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ??
+ * 订单
  * </p>
  *
  * @author atguigu
@@ -11474,7 +11474,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("t_order")
-@ApiModel(value="Order??", description="??")
+@ApiModel(value="Order对象", description="订单")
 public class Order implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -11482,48 +11482,48 @@ public class Order implements Serializable {
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "订单号")
     private String orderNo;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "课程id")
     private String courseId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程名称")
     private String courseTitle;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程封面")
     private String courseCover;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "讲师名称")
     private String teacherName;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "会员id")
     private String memberId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "会员昵称")
     private String nickname;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "会员手机")
     private String mobile;
 
-    @ApiModelProperty(value = "????(?)")
+    @ApiModelProperty(value = "订单金额（分）")
     private BigDecimal totalFee;
 
-    @ApiModelProperty(value = "????(1:?? 2:???)")
+    @ApiModelProperty(value = "支付类型（1：微信 2：支付宝）")
     private Integer payType;
 
-    @ApiModelProperty(value = "????(0:??? 1:???)")
+    @ApiModelProperty(value = "订单状态（0：未支付 1：已支付）")
     private Integer status;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     @TableLogic
     private Boolean isDeleted;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -11549,7 +11549,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ?????
+ * 支付日志表
  * </p>
  *
  * @author atguigu
@@ -11559,7 +11559,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("t_pay_log")
-@ApiModel(value="PayLog??", description="?????")
+@ApiModel(value="PayLog对象", description="支付日志表")
 public class PayLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -11567,36 +11567,36 @@ public class PayLog implements Serializable {
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "订单号")
     private String orderNo;
 
-    @ApiModelProperty(value = "??????")
+    @ApiModelProperty(value = "支付完成时间")
     private Date payTime;
 
-    @ApiModelProperty(value = "????(?)")
+    @ApiModelProperty(value = "支付金额（分）")
     private BigDecimal totalFee;
 
-    @ApiModelProperty(value = "?????")
+    @ApiModelProperty(value = "交易流水号")
     private String transactionId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "交易状态")
     private String tradeState;
 
-    @ApiModelProperty(value = "????(1:?? 2:???)")
+    @ApiModelProperty(value = "支付类型（1：微信 2：支付宝）")
     private Integer payType;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "其他属性")
     private String attr;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     @TableLogic
     private Boolean isDeleted;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -11633,7 +11633,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- * ?? ?????
+ * 订单 服务实现类
  * </p>
  *
  * @author atguigu
@@ -11697,7 +11697,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ????? ?????
+ * 支付日志表 服务实现类
  * </p>
  *
  * @author atguigu
@@ -11716,7 +11716,7 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
             Order order = orderService.getOne(wrapper);
 
             Map m = new HashMap<>();
-            //??????
+            //设置支付参数
             m.put("appid", "wx74862e0dfcf69954");
             m.put("mch_id", "1558950191");
             m.put("nonce_str", WXPayUtil.generateNonceStr());
@@ -11727,26 +11727,26 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
             m.put("notify_url", "http://guli.shop/api/order/weixinPay/weixinNotify\n");
             m.put("trade_type", "NATIVE");
 
-            //3.??httpclient??,????
+            //3.发送httpclient请求，传递参数
             HttpClient client = new HttpClient("https://api.mch.weixin.qq.com/pay/unifiedorder");
 
             client.setXmlParam(WXPayUtil.generateSignedXml(m, "T6m9iK73b0kn9g5v426MKfHQH7X8rKwb"));
             client.setHttps(true);
-            //??????
+            //执行请求发送
             client.post();
 
-            //4.??????????
-            //??????xml??
+            //4.得到发送请求返回结果
+            //返回的内容是xml格式
             String xml = client.getContent();
             Map<String, String> resultMap = WXPayUtil.xmlToMap(xml);
 
-            //???????
+            //封装返回结果集
             Map map = new HashMap<>();
             map.put("out_trade_no", orderId);
             map.put("course_id", order.getCourseId());
             map.put("total_fee", order.getTotalFee());
-            map.put("result_code", resultMap.get("result_code"));//????????
-            map.put("code_url", resultMap.get("code_url"));//?????
+            map.put("result_code", resultMap.get("result_code"));//返回二维码状态码
+            map.put("code_url", resultMap.get("code_url"));//二维码地址
 
             return map;
 
@@ -11755,23 +11755,23 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
         }
     }
 
-    //????????
+    //查询订单支付状态
     @Override
     public Map<String, String> checkPaymentStatus(String orderId) {
         try {
-            //1?????
+            //1、封装参数
             Map m = new HashMap<>();
             m.put("appid", "wx74862e0dfcf69954");
             m.put("mch_id", "1558950191");
             m.put("out_trade_no", orderId);
             m.put("nonce_str", WXPayUtil.generateNonceStr());
 
-            //2.????
+            //2.设置请求
             HttpClient client = new HttpClient("https://api.mch.weixin.qq.com/pay/orderquery");
             client.setXmlParam(WXPayUtil.generateSignedXml(m, "T6m9iK73b0kn9g5v426MKfHQH7X8rKwb"));
             client.setHttps(true);
             client.post();
-            //3?????????
+            //3、返回第三方的数据
             String xml = client.getContent();
             Map<String, String> resultmap = WXPayUtil.xmlToMap(xml);
 
@@ -11788,7 +11788,7 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
     public void updateOrderStatus(Map<String, String> map) {
         String orderNo = map.get("out_trade_no");
 
-        //????id??????
+        //根据订单id查询订单信息
         QueryWrapper<Order> wrapper = new QueryWrapper<>();
         wrapper.eq("order_no",orderNo);
         Order order = orderService.getOne(wrapper);
@@ -11798,13 +11798,13 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
         order.setStatus(1);
         orderService.updateById(order);
 
-        //??????
+        //记录支付日志
         PayLog payLog = new PayLog();
         payLog.setOrderNo(orderNo);
         payLog.setPayTime(new Date());
-        payLog.setPayType(1);//????
-        payLog.setTotalFee(order.getTotalFee());//???(?)
-        payLog.setTradeState(map.get("trade_state"));//????
+        payLog.setPayType(1);//支付类型
+        payLog.setTotalFee(order.getTotalFee());//总金额(分)
+        payLog.setTradeState(map.get("trade_state"));//支付状态
         payLog.setTransactionId(map.get("transaction_id"));
         payLog.setAttr(JSONObject.toJSONString(map));
 
@@ -11848,7 +11848,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * http?????
+ * http请求客户端
  *
  * @author qy
  *
@@ -11932,8 +11932,8 @@ public class HttpClient {
         if (param != null) {
             List<NameValuePair> nvps = new LinkedList<NameValuePair>();
             for (String key : param.keySet())
-                nvps.add(new BasicNameValuePair(key, param.get(key))); // ??
-            http.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8)); // ????
+                nvps.add(new BasicNameValuePair(key, param.get(key))); // 参数
+            http.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8)); // 设置参数
         }
         if (xmlParam != null) {
             http.setEntity(new StringEntity(xmlParam, Consts.UTF_8));
@@ -11947,7 +11947,7 @@ public class HttpClient {
             if (isHttps) {
                 SSLContext sslContext = new SSLContextBuilder()
                         .loadTrustMaterial(null, new TrustStrategy() {
-                            // ????
+                            // 信任所有
                             public boolean isTrusted(X509Certificate[] chain,
                                                      String authType)
                                     throws CertificateException {
@@ -11967,7 +11967,7 @@ public class HttpClient {
                     if (response.getStatusLine() != null)
                         statusCode = response.getStatusLine().getStatusCode();
                     HttpEntity entity = response.getEntity();
-                    // ????
+                    // 响应内容
                     content = EntityUtils.toString(entity, Consts.UTF_8);
                 }
             } finally {
@@ -12002,7 +12002,7 @@ import java.util.Random;
 public class OrderNoUtil {
 
     /**
-     * ?????
+     * 获取订单号
      * @return
      */
     public static String getOrderNo() {
@@ -12516,7 +12516,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ??????? ?????
+ * 网站统计日数据 前端控制器
  * </p>
  *
  * @author atguigu
@@ -12571,7 +12571,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ???????
+ * 网站统计日数据
  * </p>
  *
  * @author atguigu
@@ -12580,35 +12580,35 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="StatisticsDaily??", description="???????")
+@ApiModel(value="StatisticsDaily对象", description="网站统计日数据")
 public class StatisticsDaily implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "主键")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "统计日期")
     private String dateCalculated;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "注册人数")
     private Integer registerNum;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "登录人数")
     private Integer loginNum;
 
-    @ApiModelProperty(value = "???????")
+    @ApiModelProperty(value = "每日播放视频数")
     private Integer videoViewNum;
 
-    @ApiModelProperty(value = "???????")
+    @ApiModelProperty(value = "每日新增课程数")
     private Integer courseNum;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -12649,7 +12649,7 @@ import java.util.*;
 
 /**
  * <p>
- * ??????? ?????
+ * 网站统计日数据 服务实现类
  * </p>
  *
  * @author atguigu
@@ -12802,7 +12802,7 @@ public class ScheduledTask {
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-    <!-- ???????java????*.xml??????? -->
+    <!-- 项目打包时会将java目录中的*.xml文件也进行打包 -->
     <build>
         <resources>
             <resource>
@@ -13000,7 +13000,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ??? ?????
+ * 会员表 前端控制器
  * </p>
  *
  * @author atguigu
@@ -13093,7 +13093,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ???
+ * 会员表
  * </p>
  *
  * @author atguigu
@@ -13103,51 +13103,51 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("ucenter_member")
-@ApiModel(value="Member??", description="???")
+@ApiModel(value="Member对象", description="会员表")
 public class Member implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "会员id")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "??openid")
+    @ApiModelProperty(value = "微信openid")
     private String openid;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "手机号")
     private String mobile;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "密码")
     private String password;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "昵称")
     private String nickname;
 
-    @ApiModelProperty(value = "?? 1 ?,2 ?")
+    @ApiModelProperty(value = "性别 1 女，2 男")
     private Integer sex;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "年龄")
     private Integer age;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "用户头像")
     private String avatar;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "用户签名")
     private String sign;
 
-    @ApiModelProperty(value = "???? 1(true)???,  0(false)???")
+    @ApiModelProperty(value = "是否禁用 1（true）已禁用，  0（false）未禁用")
     private Boolean isDisabled;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     @TableLogic
     private Boolean isDeleted;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -13205,7 +13205,7 @@ import java.util.Map;
 
 /**
  * <p>
- * ??? ?????
+ * 会员表 服务实现类
  * </p>
  *
  * @author atguigu
@@ -13461,11 +13461,11 @@ public class RedisConfig extends CachingConfigurerSupport {
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
         template.setConnectionFactory(factory);
-        //key?????
+        //key序列化方式
         template.setKeySerializer(redisSerializer);
-        //value???
+        //value序列化
         template.setValueSerializer(jackson2JsonRedisSerializer);
-        //value hashmap???
+        //value hashmap序列化
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
         return template;
     }
@@ -13474,12 +13474,12 @@ public class RedisConfig extends CachingConfigurerSupport {
     public CacheManager cacheManager(RedisConnectionFactory factory) {
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        //?????????????
+        //解决查询缓存转换异常的问题
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
-        // ?????(???????),????600?
+        // 配置序列化（解决乱码的问题）,过期时间600秒
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(600))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
@@ -13514,7 +13514,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public R error(Exception e) {
         System.out.println(e.getMessage());
-        return R.error().message("?????????");
+        return R.error().message("执行了全局异常处理");
     }
 
     //specific exception
@@ -13522,7 +13522,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public R error(ArithmeticException e) {
         System.out.println(e.getMessage());
-        return R.error().message("?????????");
+        return R.error().message("执行了特定异常处理");
     }
 
     //customized exception
@@ -13614,8 +13614,8 @@ public class SwaggerConfig {
 
     private ApiInfo webApiInfo() {
         return new ApiInfoBuilder()
-                .title("??-????API??")
-                .description("?????????????????")
+                .title("网站-课程中心API文档")
+                .description("本文档描述了课程中心微服务接口定义")
                 .version("1.0")
                 .contact(new Contact("Tom", "http://atguigu.com", "123456@gmail.com"))
                 .build();
@@ -13673,49 +13673,49 @@ public class CourseWebVoOrder {
 
     private String id;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程标题")
     private String title;
 
-    @ApiModelProperty(value = "??????,???0??????")
+    @ApiModelProperty(value = "课程销售价格，设置为0则可免费观看")
     private BigDecimal price;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "总课时")
     private Integer lessonNum;
 
-    @ApiModelProperty(value = "????????")
+    @ApiModelProperty(value = "课程封面图片路径")
     private String cover;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "销售数量")
     private Long buyCount;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "浏览数量")
     private Long viewCount;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "课程简介")
     private String description;
 
-    @ApiModelProperty(value = "??ID")
+    @ApiModelProperty(value = "讲师ID")
     private String teacherId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "讲师姓名")
     private String teacherName;
 
-    @ApiModelProperty(value = "????,???????")
+    @ApiModelProperty(value = "讲师资历,一句话说明讲师")
     private String intro;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "讲师头像")
     private String avatar;
 
-    @ApiModelProperty(value = "????ID")
+    @ApiModelProperty(value = "课程类别ID")
     private String subjectCatId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "类别名称")
     private String subjectCat;
 
-    @ApiModelProperty(value = "????ID")
+    @ApiModelProperty(value = "课程类别ID")
     private String subjectId;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "类别名称")
     private String subject;
 
 }
@@ -13734,46 +13734,46 @@ import java.util.Date;
 @Data
 public class UcenterMemberOrder {
 
-    @ApiModelProperty(value = "??id")
+    @ApiModelProperty(value = "会员id")
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "??openid")
+    @ApiModelProperty(value = "微信openid")
     private String openid;
 
-    @ApiModelProperty(value = "???")
+    @ApiModelProperty(value = "手机号")
     private String mobile;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "密码")
     private String password;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "昵称")
     private String nickname;
 
-    @ApiModelProperty(value = "?? 1 ?,2 ?")
+    @ApiModelProperty(value = "性别 1 女，2 男")
     private Integer sex;
 
-    @ApiModelProperty(value = "??")
+    @ApiModelProperty(value = "年龄")
     private Integer age;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "用户头像")
     private String avatar;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "用户签名")
     private String sign;
 
-    @ApiModelProperty(value = "???? 1(true)???,  0(false)???")
+    @ApiModelProperty(value = "是否禁用 1（true）已禁用，  0（false）未禁用")
     private Boolean isDisabled;
 
-    @ApiModelProperty(value = "???? 1(true)???, 0(false)???")
+    @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
     @TableLogic
     private Boolean isDeleted;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private Date gmtCreate;
 
-    @ApiModelProperty(value = "????")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
@@ -13855,20 +13855,20 @@ public class UcenterMemberOrder {
        path: '/teacher',
            component: Layout,
                redirect: '/teacher/table',
-                   name: '????',
-                       meta: { title: '????', icon: 'example' },
+                   name: '教师管理',
+                       meta: { title: '教师列表', icon: 'example' },
                            children: [
                                  {
                                    path: 'list',
-                                   name: '????',
+                                   name: '教师列表',
                                    component: () => import('@/views/edu/teacher/list'),
-                                   meta: { title: '????', icon: 'table' }
+                                   meta: { title: '教师列表', icon: 'table' }
                                  },
                                  {
                                    path: 'create',
-                                   name: '????',
+                                   name: '添加教师',
                                    component: () => import('@/views/edu/teacher/save'),
-                                   meta: { title: '????', icon: 'tree' }
+                                   meta: { title: '添加教师', icon: 'tree' }
                                }
                            ]
    },
@@ -13971,26 +13971,26 @@ public class UcenterMemberOrder {
                border
                fit
                highlight-current-row>
-           <el-table-column label="??" width="70" align="center">
+           <el-table-column label="序号" width="70" align="center">
                <template slot-scope="scope">
                    {{ (current - 1) * limit + scope.$index + 1}}
                </template>
            </el-table-column>
-           <el-table-column label="??" prop="name" width="80"/>
-           <el-table-column label="??" width="180">
+           <el-table-column label="名称" prop="name" width="80"/>
+           <el-table-column label="简介" width="180">
                <template slot-scope="scope">
-                   {{ scope.row.level===1?'????':'????' }}
+                   {{ scope.row.level===1?'高级讲师':'首席讲师' }}
                </template>
            </el-table-column>
-           <el-table-column label="??" prop="intro"/>
-           <el-table-column label="????" prop="gmtCreate" width="160"/>
-           <el-table-column label="??" prop="sort" width="60"/>
-           <el-table-column label="??" width="200" align="center">
+           <el-table-column label="资历" prop="intro"/>
+           <el-table-column label="添加时间" prop="gmtCreate" width="160"/>
+           <el-table-column label="排序" prop="sort" width="60"/>
+           <el-table-column label="操作" width="200" align="center">
                <template slot-scope="scope">
                    <router-link :to="`/edu/teacher/edit/${scope.row.id}`">
-                       <el-button type="primary" size="mini" icon="el-icon-edit">??</el-button>
+                       <el-button type="primary" size="mini" icon="el-icon-edit">修改</el-button>
                    </router-link>
-                   <el-button type="danger" size="mini" icon="el-icon-delete">??</el-button>
+                   <el-button type="danger" size="mini" icon="el-icon-delete">删除</el-button>
                </template>
            </el-table-column>
            </el-table>
@@ -14072,21 +14072,21 @@ public class UcenterMemberOrder {
    ```vue
    <el-form :inline="true" class="demo-form-inline" style="text-align: center;">
        <el-form-item>
-           <el-input v-model="teacherQuery.name" placeholder="???"/>
+           <el-input v-model="teacherQuery.name" placeholder="讲师名"/>
        </el-form-item>
    
        <el-form-item>
-           <el-select v-model="teacherQuery.level" clearable placeholder="????">
-               <el-option :value="1" label="????"/>
-               <el-option :value="2" label="????"/>
+           <el-select v-model="teacherQuery.level" clearable placeholder="讲师头衔">
+               <el-option :value="1" label="高级讲师"/>
+               <el-option :value="2" label="首席讲师"/>
            </el-select>
        </el-form-item>
    
-       <el-form-item label="????">
+       <el-form-item label="添加时间">
            <el-date-picker
                            v-model="teacherQuery.begin"
                            type="datetime"
-                           placeholder="??????"
+                           placeholder="选择开始时间"
                            value-format="yyyy-MM-dd HH:mm:ss"
                            default-time="00:00:00"
                            />
@@ -14095,14 +14095,14 @@ public class UcenterMemberOrder {
            <el-date-picker
                            v-model="teacherQuery.end"
                            type="datetime"
-                           placeholder="??????"
+                           placeholder="选择截止时间"
                            value-format="yyyy-MM-dd HH:mm:ss"
                            default-time="00:00:00"
                            />
        </el-form-item>
    
-       <el-button type="primary" icon="el-icon-search" @click="getTeacherList()">??</el-button>
-       <el-button type="default" @click="resetData()">??</el-button>
+       <el-button type="primary" icon="el-icon-search" @click="getTeacherList()">查询</el-button>
+       <el-button type="default" @click="resetData()">清空</el-button>
    </el-form>
    ```
 
@@ -14131,14 +14131,14 @@ public class UcenterMemberOrder {
    list.vue
 
    ```html
-   <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeTeacherByID(scope.row.id)">??</el-button>
+   <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeTeacherByID(scope.row.id)">删除</el-button>
    ```
 
    ```js
    removeTeacherByID( id ) {
-       this.$confirm('???????????, ?????', '??', {
-           confirmButtonText: '??',
-           cancelButtonText: '??',
+       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+           confirmButtonText: '确定',
+           cancelButtonText: '取消',
            type: 'warning'
        }).then(() => {
            teacher.removeTeacherByID(id)
@@ -14146,7 +14146,7 @@ public class UcenterMemberOrder {
                
                this.$message({
                    type: 'success',
-                   message: '????!'
+                   message: '删除成功!'
                })
    
                this.getTeacherList(this.current)
@@ -14169,7 +14169,7 @@ public class UcenterMemberOrder {
        path: 'edit/:id',
            name: 'EduTeacherEdit',
                component: () => import('@/views/edu/teacher/save'),
-                   meta: { title: '????', noCache: true},
+                   meta: { title: '编译教师', noCache: true},
                        hidden: true
    },
    ```
@@ -14178,7 +14178,7 @@ public class UcenterMemberOrder {
 
 ```vue
 <router-link :to="`/edu/teacher/edit/${scope.row.id}`">
-    <el-button type="primary" size="mini" icon="el-icon-edit">??</el-button>
+    <el-button type="primary" size="mini" icon="el-icon-edit">修改</el-button>
 </router-link>
 ```
 
@@ -14209,33 +14209,33 @@ updateTeacher(teacher) {
   <div class="app-container"> 
     <el-form label-width="120px">
 
-      <el-form-item label="????">
+      <el-form-item label="讲师名称">
         <el-input v-model="teacher.name" />
       </el-form-item>
 
-      <el-form-item label="????">
+      <el-form-item label="讲师排序">
         <el-input-number v-model="teacher.sort" controls-position="right"  min="0" />
       </el-form-item>
 
-      <el-form-item label="????">
-        <el-select v-model="teacher.level" clearable placeholder="???">
-          <el-option :value="1" label="????" />
-          <el-option :value="2" label="????" />
+      <el-form-item label="讲师头衔">
+        <el-select v-model="teacher.level" clearable placeholder="请选择">
+          <el-option :value="1" label="高级讲师" />
+          <el-option :value="2" label="首席讲师" />
         </el-select>
       </el-form-item>
 
-      <el-form-item label="????">
+      <el-form-item label="讲师资历">
         <el-input v-model="teacher.career" />
       </el-form-item>
 
-      <el-form-item label="????">
+      <el-form-item label="讲师简介">
         <el-input v-model="teacher.intro" :rows="10" type="textarea" />
       </el-form-item>
 
-      <!-- ????:TODO -->
+      <!-- 讲师头像：TODO -->
 
         <el-form-item>
-          <el-button :disabled="saveBtnDisabled" type="primary" @click="saveOrUpdate">??</el-button>
+          <el-button :disabled="saveBtnDisabled" type="primary" @click="saveOrUpdate">保存</el-button>
         </el-form-item>
         
     </el-form>
@@ -14289,7 +14289,7 @@ updateTeacher(teacher) {
           .then(response => {
             this.$message({
               type: 'success',
-              message: `????!`
+              message: `修改成功！`
             });
             this.$router.push({ path: '/teacher/list'})
           })
@@ -14299,7 +14299,7 @@ updateTeacher(teacher) {
           .then(response => {
             this.$message({
               type: 'success',
-              message: `????!`
+              message: `添加成功！`
             });
             this.$router.push({ path: '/teacher/list'})
           })
@@ -14318,19 +14318,19 @@ src/view/edu/teacher/save.vue
 div part
 
 ```vue
-<!-- ???? -->
-<el-form-item label="????">
-  <!-- ????? -->
+<!-- 讲师头像 -->
+<el-form-item label="讲师头像">
+  <!-- 头衔缩略图 -->
   <pan-thumb :image="teacher.avatar" />
-  <!-- ?????? -->
-  <el-button type="primary" icon="el-icon-upload" @click="imagecropperShow=true">????</el-button>
+  <!-- 文件上传按钮 -->
+  <el-button type="primary" icon="el-icon-upload" @click="imagecropperShow=true">更换头像</el-button>
 
   <!--
-    v-show:????????
-    :key:???id,??????????????,?????
-    :url:?????url??
-    @close:??????
-    @crop-upload-success:????????-->
+    v-show：是否显示上传组件
+    :key：类似于id，如果一个页面多个图片上传控件，可以做区分
+    :url：后台上传的url地址
+    @close：关闭上传组件
+    @crop-upload-success：上传成功后的回调-->
   <image-cropper
     v-show="imagecropperShow"
     :width="300"
@@ -14358,10 +14358,10 @@ script part
         return {
           teacher: { 
           },
-          BASE_API: process.env.BASE_API, // ??API??
-          imagecropperShow: false, // ????????
-          imagecropperKey: 0, // ????id
-          saveBtnDisabled: false // ????????,
+          BASE_API: process.env.BASE_API, // 接口API地址
+          imagecropperShow: false, // 是否显示上传组件
+          imagecropperKey: 0, // 上传组件id
+          saveBtnDisabled: false // 保存按钮是否禁用,
         }
       },
       created() {
@@ -14381,7 +14381,7 @@ script part
           console.log(data.url)
           console.log(this.BASE_API + '/eduoss/fileoss')
           this.imagecropperShow=false
-          //??????,????
+          //上传成功之后，关闭弹窗
           this.teacher.avatar=data.url,
           this.imagecropperKey=this.imagecropperKey+1
         },
@@ -14401,20 +14401,20 @@ script part
     path: '/subject',
         component: Layout,
             redirect: '/subject/list',
-                name: '????',
-                    meta: { title: '????', icon: 'example' },
+                name: '课程管理',
+                    meta: { title: '课程管理', icon: 'example' },
                         children: [
                             {
                                 path: 'list',
-                                name: '????',
+                                name: '课程列表',
                                 component: () => import('@/views/edu/subject/list'),
-                                meta: { title: '????', icon: 'table' }
+                                meta: { title: '课程列表', icon: 'table' }
                             },
                             {
                                 path: 'save',
-                                name: '????',
+                                name: '添加课程',
                                 component: () => import('@/views/edu/subject/save'),
-                                meta: { title: '????', icon: 'tree' }
+                                meta: { title: '添加课程', icon: 'tree' }
                             }
                         ]
 },
@@ -14442,15 +14442,15 @@ export default {
 <template>
   <div class="app-container">
     <el-form label-width="120px">
-      <el-form-item label="????">
-        <el-tag type="info">excel????</el-tag>
+      <el-form-item label="信息描述">
+        <el-tag type="info">excel模版说明</el-tag>
         <el-tag>
           <i class="el-icon-download" />
-          <a :href="'/static/01.xlsx'">??????</a>
+          <a :href="'/static/01.xlsx'">点击下载模版</a>
         </el-tag>
       </el-form-item>
 
-      <el-form-item label="??Excel">
+      <el-form-item label="选择Excel">
         <el-upload
           ref="upload"
           :auto-upload="false"
@@ -14462,14 +14462,14 @@ export default {
           name="file"
           accept="application/.xlsx"
         >
-          <el-button slot="trigger" size="small" type="primary">????</el-button>
+          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
           <el-button
             :loading="loading"
             style="margin-left: 10px;"
             size="small"
             type="success"
             @click="submitUpload"
-          >??????</el-button>
+          >上传到服务器</el-button>
         </el-upload>
       </el-form-item>
     </el-form>
@@ -14480,8 +14480,8 @@ export default {
 export default {
   data() {
       return{
-      BASE_API: process.env.BASE_API, // ??API??
-      importBtnDisabled: false, // ??????,
+      BASE_API: process.env.BASE_API, // 接口API地址
+      importBtnDisabled: false, // 按钮是否禁用,
       loading: false
       }
   },
@@ -14498,9 +14498,9 @@ export default {
         this.loading = false;
         this.$message({
           type: "success",
-          message: "????????"
+          message: "添加课程分类成功"
         });
-                //??????,????
+                //回到列表页面，路由跳转
         this.$router.push({ path: "/subject/list" });
       }
     },
@@ -14508,7 +14508,7 @@ export default {
       this.loading = false;
       this.$message({
         type: "error",
-        message: "????????"
+        message: "添加课程分类失败"
       });
     }
   }
@@ -14546,7 +14546,7 @@ export default {
   data() {
     return {
       filterText: '',
-      data2: [], //??????
+      data2: [], //返回所有数据
       defaultProps: {
         children: 'children',
         label: 'title' //change the label to our back-end name -- title
@@ -14635,20 +14635,20 @@ export default {
   path: '/course',
   component: Layout,
   redirect: '/course/list',
-  name: '????',
-  meta: { title: '????', icon: 'example' },
+  name: '课程管理',
+  meta: { title: '课程管理', icon: 'example' },
   children: [
     {
       path: 'list',
-      name: '????',
+      name: '课程列表',
       component: () => import('@/views/edu/course/list'),
-      meta: { title: '????', icon: 'table' }
+      meta: { title: '课程列表', icon: 'table' }
     },
     {
       path: 'info',
-      name: '????',
+      name: '添加课程',
       component: () => import('@/views/edu/course/info'),
-      meta: { title: '????', icon: 'tree' }
+      meta: { title: '添加课程', icon: 'tree' }
     },
     {
       path: 'info/:id',
@@ -14680,22 +14680,22 @@ export default {
 ```vue
 <template>
   <div class="app-container">
-    <h2 style="text-align: center;">?????</h2>
+    <h2 style="text-align: center;">发布新课程</h2>
 
     <el-steps :active="1" process-status="wait" align-center style="margin-bottom: 40px;">
-      <el-step title="????????" />
-      <el-step title="??????" />
-      <el-step title="????" />
+      <el-step title="填写课程基本信息" />
+      <el-step title="创建课程大纲" />
+      <el-step title="提交审核" />
     </el-steps>
     <el-form label-width="120px">
-        <el-form-item label="????">
-            <el-input v-model="courseInfo.title" placeholder=" ??:???????:??????????????????????" />
+        <el-form-item label="课程标题">
+            <el-input v-model="courseInfo.title" placeholder=" 示例：机器学习项目课：从基础到搭建项目视频课程。专业名称注意大小写" />
         </el-form-item>
 
-        <el-form-item label="????">
+        <el-form-item label="课程分类">
             <el-select
             v-model="courseInfo.subjectParentId"
-            placeholder="????"
+            placeholder="一级分类"
             @change="subjectCategoryChanged"
             >
                 <el-option
@@ -14706,8 +14706,8 @@ export default {
             />
             </el-select>
 
-            <!-- ???? -->
-            <el-select v-model="courseInfo.subjectId" placeholder="????">
+            <!-- 二级分类 -->
+            <el-select v-model="courseInfo.subjectId" placeholder="二级分类">
             <el-option
                 v-for="subject in subjects"
                 :key="subject.id"
@@ -14717,8 +14717,8 @@ export default {
             </el-select>
         </el-form-item>
 
-        <el-form-item label="????">
-            <el-select v-model="courseInfo.teacherId" placeholder="???">
+        <el-form-item label="课程讲师">
+            <el-select v-model="courseInfo.teacherId" placeholder="请选择">
                 <el-option
                 v-for="teacher in teachers"
                 :key="teacher.id"
@@ -14728,22 +14728,22 @@ export default {
             </el-select>
         </el-form-item>    
         
-        <el-form-item label="???">
+        <el-form-item label="总课时">
             <el-input-number
                 :min="0"
                 v-model="courseInfo.lessonNum"
                 controls-position="right"
-                placeholder="??????????"
+                placeholder="请填写课程的总课时数"
             />
         </el-form-item>
 
-        <!-- ????-->
-        <el-form-item label="????">
+        <!-- 课程简介-->
+        <el-form-item label="课程简介">
             <tinymce :height="300" v-model="courseInfo.description"/>
         </el-form-item>
 
-        <!-- ???? -->
-        <el-form-item label="????">
+        <!-- 课程封面 -->
+        <el-form-item label="课程封面">
         <el-upload
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
@@ -14755,17 +14755,17 @@ export default {
         </el-upload>
         </el-form-item>
 
-        <el-form-item label="????">
+        <el-form-item label="课程价格">
         <el-input-number
             :min="0"
             v-model="courseInfo.price"
             controls-position="right"
-            placeholder="????????0?"
-        />?
+            placeholder="免费课程请设置为0元"
+        />元
         </el-form-item>
 
         <el-form-item>
-            <el-button :disabled="saveBtnDisabled" type="primary" @click="saveOrUpdate">??????</el-button>
+            <el-button :disabled="saveBtnDisabled" type="primary" @click="saveOrUpdate">保存并下一步</el-button>
         </el-form-item>
     </el-form>
   </div>
@@ -14857,10 +14857,10 @@ export default {
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error("????????? JPG ??!");
+                    this.$message.error("上传头像图片只能是 JPG 格式!");
                 }
                 if (!isLt2M) {
-                    this.$message.error("???????????? 2MB!");
+                    this.$message.error("上传头像图片大小不能超过 2MB!");
                 }
                 return isJPG && isLt2M;            
             },
@@ -14973,12 +14973,12 @@ export default {
 ```vue
 <template>
   <div class="app-container">
-    <h2 style="text-align: center;">?????</h2>
+    <h2 style="text-align: center;">发布新课程</h2>
 
     <el-steps :active="3" process-status="wait" align-center style="margin-bottom: 40px;">
-      <el-step title="????????" />
-      <el-step title="??????" />
-      <el-step title="????" />
+      <el-step title="填写课程基本信息" />
+      <el-step title="创建课程大纲" />
+      <el-step title="发布课程" />
     </el-steps>
 
     <div class="ccInfo">
@@ -14986,19 +14986,19 @@ export default {
       <div class="main">
         <h2>{{ coursePublish.title }}</h2>
         <p class="gray">
-          <span>?{{ coursePublish.lessonNum }}??</span>
+          <span>共{{ coursePublish.lessonNum }}课时</span>
         </p>
         <p>
-          <span>????:{{ coursePublish.subjectCategory }} — {{ coursePublish.subject }}</span>
+          <span>所属分类：{{ coursePublish.subjectCategory }} — {{ coursePublish.subject }}</span>
         </p>
-        <p>????:{{ coursePublish.teacherName }}</p>
-        <h3 class="red">?{{ coursePublish.price }}</h3>
+        <p>课程讲师：{{ coursePublish.teacherName }}</p>
+        <h3 class="red">￥{{ coursePublish.price }}</h3>
       </div>
     </div>
 
     <div>
-      <el-button @click="previous">????</el-button>
-      <el-button :disabled="saveBtnDisabled" type="primary" @click="publish">????</el-button>
+      <el-button @click="previous">返回修改</el-button>
+      <el-button :disabled="saveBtnDisabled" type="primary" @click="publish">发布课程</el-button>
     </div>
   </div>
 </template>
@@ -15691,6 +15691,3 @@ methods: {
 ![image-20220714213658525](images/image-20220714213658525.png)
 
 
-
-1. Git
-2. Jenkins
