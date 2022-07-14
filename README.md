@@ -8,6 +8,9 @@ Date start: 26 Jun 2022
 
 Date end : 14 July 2022
 
+It is not suitable for you to read here as it is very long notes.
+Please copy paste this file to your Typora in order to get the grouping function, else this exhausting your eyes.
+
 ## Introduction
 
 - Online Education Platform, B2C
