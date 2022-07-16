@@ -11,6 +11,26 @@ Date end : 14 July 2022
 It is not suitable for you to read here as it is a very long note.
 Please copy paste this file to your Typora in order to get the grouping function.
 
+## Structure
+
+```
+guli
+├── infrastructure -- Spring Gateway config
+├── service -- MyBatisGenerator生成的数据库操作代码
+│	├── service_acl -- Access Control List
+│	├── service_cms -- Banner
+│	├── service_edu -- Teaacher, Course
+│	├── service_order -- Order
+│	├── service_oss -- Online Storage _ here using dropbox
+│	├── service_statistics -- Statistics
+│	└── service_ucenter -- User Center
+├── common -- Common shared objects or utilities across project
+│	├── common_utils -- 
+│	├── service_base -- such as Swagger, redis config and exception handler
+│	└── spring_security -- spring security setting
+└── canal_clientEdu -- Testing for Canal which synchronize different database with different IP
+```
+
 ## Introduction
 
 - Online Education Platform, B2C
