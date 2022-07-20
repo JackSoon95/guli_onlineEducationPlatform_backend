@@ -3278,7 +3278,7 @@ Result:
 
 > localhost:8080/hello
 >
-> ![image-20220626190216154](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626190216154.png)
+> ![image-20220626190216154](images\image-20220626190216154.png)
 
 
 
@@ -3432,7 +3432,7 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
 ```
 
 - we can select other type by:
-- ![image-20220626192749014](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626192749014.png)
+- ![image-20220626192749014](images\image-20220626192749014.png)
   - AUTO == AUTO_INCREMENT
   - INPUT / NONE == self input
   - UUID
@@ -3500,7 +3500,7 @@ Result:
 >==> Parameters: testing_update(String), 2022-06-26 20:21:34.224(Timestamp), 2(Long)
 ><==    Updates: 1
 >
->![image-20220626202233608](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626202233608.png)
+>![image-20220626202233608](images\image-20220626202233608.png)
 
 test create:
 
@@ -3522,7 +3522,7 @@ Result:
 >==> Parameters: 1541034366124273666(Long), testcreate(String), 111(Integer), testcreate@gg.com(String), 2022-06-26 20:23:18.576(Timestamp), 2022-06-26 20:23:18.576(Timestamp)
 ><==    Updates: 1
 >
->![image-20220626202352892](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626202352892.png)
+>![image-20220626202352892](images\image-20220626202352892.png)
 
 
 
@@ -3598,7 +3598,7 @@ Result:
 > ==> Parameters: 1541041186565820418(Long), testcreate2(String), 123(Integer), testcreate2@gg.com(String), 2022-06-26 20:50:24.696(Timestamp), 2022-06-26 20:50:24.696(Timestamp), 1(Integer)
 > <==    Updates: 1
 >
-> ![image-20220626205110600](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626205110600.png)
+> ![image-20220626205110600](images\image-20220626205110600.png)
 
 test update:
 
@@ -3623,7 +3623,7 @@ Result:
 >==> Parameters: versionTest(String), 123(Integer), testcreate2@gg.com(String), 2022-06-26 20:50:25.0(Timestamp), 2022-06-26 20:54:00.98(Timestamp), 2(Integer), 1541041186565820418(Long), 1(Integer)
 ><==    Updates: 1
 >
->![image-20220626205546527](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626205546527.png)
+>![image-20220626205546527](images\image-20220626205546527.png)
 
 
 
@@ -3690,7 +3690,7 @@ Result:
 >true
 >false
 >
->![image-20220626214520167](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626214520167.png)
+>![image-20220626214520167](images\image-20220626214520167.png)
 
 
 
@@ -3772,7 +3772,7 @@ Result:
 >==> Parameters: 2(Long)
 ><==    Updates: 1
 >
->![image-20220626220438786](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626220438786.png)
+>![image-20220626220438786](images\image-20220626220438786.png)
 
 > Q: how to query the deleted items?
 
@@ -3807,13 +3807,13 @@ public PerformanceInterceptor performanceInterceptor() {
 
 test -- exceed max
 
-![image-20220626222342397](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626222342397.png)
+![image-20220626222342397](images\image-20220626222342397.png)
 
 
 
 #### Wrapper
 
-![image-20220626222441246](C:\Users\topsa\AppData\Roaming\Typora\typora-user-images\image-20220626222441246.png)
+![image-20220626222441246](images\image-20220626222441246.png)
 
 > Always use : **QueryWrapper**
 
