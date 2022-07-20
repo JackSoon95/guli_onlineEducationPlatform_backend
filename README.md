@@ -16,7 +16,7 @@ Please copy paste this file to your Typora in order to get the grouping function
 ```
 guli
 ├── infrastructure -- Spring Gateway config
-├── service -- MyBatisGenerator生成的数据库操作代码
+├── service -- 
 │	├── service_acl -- Access Control List
 │	├── service_cms -- Banner
 │	├── service_edu -- Teaacher, Course
